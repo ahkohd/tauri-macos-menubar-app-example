@@ -21,11 +21,19 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "tauri-macos-menubar-app-example",
-        "width": 800,
-        "height": 600
+        "title": "menubar",
+        "width": 350,
+        "height": 400,
+        "decorations": false,
+        "transparent": true,
+        "visible": false
       }
     ],
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    },
+    "macOSPrivateApi": true,
     "security": {
       "csp": null
     },
