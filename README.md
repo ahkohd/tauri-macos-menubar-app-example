@@ -34,6 +34,8 @@ pnpm tauri dev
 
 ## Demo
 
+See it in action:
+
 ![Demo](./demo.gif)
 
 ## Recommended IDE Setup
