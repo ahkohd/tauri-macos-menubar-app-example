@@ -92,11 +92,23 @@ pub fn position_menubar_panel(app_handle: &tauri::AppHandle, padding_top: f64) {
 
     let mut win_frame: NSRect = unsafe { msg_send![handle, frame] };
 
-    win_frame.origin.x = mouse_location.x - (win_frame.size.width / 2.0);
-
     win_frame.origin.y = (monitor_pos.y + monitor_size.height) - win_frame.size.height;
 
     win_frame.origin.y -= padding_top;
+
+    win_frame.origin.x = {
+        let top_right = mouse_location.x + (win_frame.size.width / 2.0);
+
+        let is_offscreen = top_right > monitor_pos.x + monitor_size.width;
+
+        if !is_offscreen {
+            mouse_location.x - (win_frame.size.width / 2.0)
+        } else {
+            let diff = top_right - (monitor_pos.x + monitor_size.width);
+
+            mouse_location.x - (win_frame.size.width / 2.0) - diff
+        }
+    };
 
     let _: () = unsafe { msg_send![handle, setFrame: win_frame display: NO] };
 }
