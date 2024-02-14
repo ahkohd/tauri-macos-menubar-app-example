@@ -15,7 +15,7 @@ pub fn handle(app_handle: &AppHandle, event: SystemTrayEvent) {
             }
 
             const OFFSET_X: f64 = 50.0;
-            const OFFSET_Y: f64 = 20.0;
+            const OFFSET_Y: f64 = 0.0;
 
             let window = app_handle.get_window("main").unwrap();
 
