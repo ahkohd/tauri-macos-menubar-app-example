@@ -3,8 +3,9 @@ use tauri_nspanel::{
     cocoa::{
         appkit::{NSMainMenuWindowLevel, NSView, NSWindow},
         base::id,
+        foundation::{NSPoint, NSRect},
     },
-    objc::{msg_send, sel, sel_impl},
+    objc::{class, msg_send, runtime::NO, sel, sel_impl},
     panel_delegate, ManagerExt, WindowExt,
 };
 
@@ -70,4 +71,32 @@ pub fn set_corner_radius(window: &tauri::Window, radius: f64) {
 
         let _: () = msg_send![layer, setCornerRadius: radius];
     }
+}
+
+pub fn position_menubar_panel(app_handle: &tauri::AppHandle, padding_top: f64) {
+    let window = app_handle.get_window("main").unwrap();
+
+    let monitor = monitor::get_monitor_with_cursor().unwrap();
+
+    let scale_factor = monitor.scale_factor();
+
+    let visible_area = monitor.visible_area();
+
+    let monitor_pos = visible_area.position().to_logical::<f64>(scale_factor);
+
+    let monitor_size = visible_area.size().to_logical::<f64>(scale_factor);
+
+    let mouse_location: NSPoint = unsafe { msg_send![class!(NSEvent), mouseLocation] };
+
+    let handle: id = window.ns_window().unwrap() as _;
+
+    let mut win_frame: NSRect = unsafe { msg_send![handle, frame] };
+
+    win_frame.origin.x = mouse_location.x - (win_frame.size.width / 2.0);
+
+    win_frame.origin.y = (monitor_pos.y + monitor_size.height) - win_frame.size.height;
+
+    win_frame.origin.y -= padding_top;
+
+    let _: () = unsafe { msg_send![handle, setFrame: win_frame display: NO] };
 }
