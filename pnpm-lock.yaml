@@ -30,7 +30,7 @@ devDependencies:
     version: 4.2.1(vite@5.1.6)
   typescript:
     specifier: ^5.0.2
-    version: 5.4.2
+    version: 5.4.3
   vite:
     specifier: ^5.0.0
     version: 5.1.6
@@ -1042,8 +1042,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /typescript@5.4.2:
-    resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
+  /typescript@5.4.3:
+    resolution: {integrity: sha512-KrPd3PKaCLr78MalgiwJnA25Nm8HAmdwN3mYUYZgG/wizIo9EainNVQI9/yDavtVFRN2h3k8uf3GLHuhDMgEHg==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
