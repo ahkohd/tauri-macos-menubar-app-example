@@ -132,9 +132,9 @@ pub fn position_menubar_panel(app_handle: &tauri::AppHandle, padding_top: f64) {
 }
 
 fn register_workspace_listener(name: String, callback: Box<dyn Fn()>) {
-    let shared_work: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
+    let workspace: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
 
-    let notification_center: id = unsafe { msg_send![shared_work, notificationCenter] };
+    let notification_center: id = unsafe { msg_send![workspace, notificationCenter] };
 
     let block = ConcreteBlock::new(move |_notif: id| {
         callback();
