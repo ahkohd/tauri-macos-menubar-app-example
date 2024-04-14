@@ -6,7 +6,7 @@ use crate::fns::{
     setup_menubar_event_listeners, swizzle_to_menubar_panel, update_menubar_appearance,
 };
 
-const INIT: Once = Once::new();
+static INIT: Once = Once::new();
 
 #[tauri::command]
 pub fn init(app_handle: tauri::AppHandle) {
