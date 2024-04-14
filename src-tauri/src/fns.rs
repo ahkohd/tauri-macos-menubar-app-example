@@ -17,7 +17,8 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
 
     let panel_delegate = panel_delegate!(SpotlightPanelDelegate {
         window_did_become_key,
-        window_did_resign_key
+        window_did_resign_key,
+        window_did_update
     });
 
     let handle = window.app_handle();
@@ -25,10 +26,13 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
     panel_delegate.set_listener(Box::new(move |delegate_name: String| {
         match delegate_name.as_str() {
             "window_did_become_key" => {
-                handle.trigger_global("menubar_panel_did_become_key", None);
+                println!(" i became the key");
             }
             "window_did_resign_key" => {
                 handle.trigger_global("menubar_panel_did_resign_key", None);
+            }
+            "window_did_update" => {
+                handle.trigger_global("menubar_panel_did_update", None);
             }
             _ => (),
         }
@@ -47,9 +51,31 @@ pub fn setup_menubar_event_listeners(app_handle: &tauri::AppHandle) {
     let handle = app_handle.app_handle();
 
     app_handle.listen_global("menubar_panel_did_resign_key", move |_| {
+        println!("1. did resign key");
+
+        println!("2. menubar is frontmost: {}", check_menubar_frontmost());
+
         let panel = handle.get_panel("main").unwrap();
 
+        if check_menubar_frontmost() {
+            return;
+        }
+
         panel.order_out(None);
+    });
+
+    let handle = app_handle.app_handle();
+
+    app_handle.listen_global("menubar_panel_did_update", move |_| {
+        // if check_cursor_in_menubar_panel(&handle) {
+        //     return;
+        // }
+        //
+        // if !check_menubar_is_frontmost() {
+        //     let panel = handle.get_panel("main").unwrap();
+        //
+        //     panel.order_out(None);
+        // }
     });
 }
 
@@ -111,4 +137,26 @@ pub fn position_menubar_panel(app_handle: &tauri::AppHandle, padding_top: f64) {
     };
 
     let _: () = unsafe { msg_send![handle, setFrame: win_frame display: NO] };
+}
+
+fn get_frontmost_app_pid() -> i32 {
+    let workspace: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
+
+    let frontmost_application: id = unsafe { msg_send![workspace, frontmostApplication] };
+
+    let pid: i32 = unsafe { msg_send![frontmost_application, processIdentifier] };
+
+    pid
+}
+
+fn app_pid() -> i32 {
+    let process_info: id = unsafe { msg_send![class!(NSProcessInfo), processInfo] };
+
+    let pid: i32 = unsafe { msg_send![process_info, processIdentifier] };
+
+    pid
+}
+
+pub fn check_menubar_frontmost() -> bool {
+    get_frontmost_app_pid() == app_pid()
 }
