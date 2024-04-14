@@ -16,7 +16,7 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
     let window = app_handle.get_window("main").unwrap();
 
     let panel_delegate = panel_delegate!(SpotlightPanelDelegate {
-        indow_did_become_key,
+        window_did_become_key,
         window_did_resign_key
     });
 
