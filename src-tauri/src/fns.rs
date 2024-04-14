@@ -67,6 +67,11 @@ pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
 
     register_workspace_listener(
         "NSWorkspaceDidActivateApplicationNotification".into(),
+        callback.clone(),
+    );
+
+    register_workspace_listener(
+        "NSWorkspaceActiveSpaceDidChangeNotification".into(),
         callback,
     );
 }
