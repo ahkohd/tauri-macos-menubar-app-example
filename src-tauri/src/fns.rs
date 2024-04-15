@@ -1,8 +1,11 @@
+use std::ffi::CString;
+
 use tauri::Manager;
 use tauri_nspanel::{
+    block::ConcreteBlock,
     cocoa::{
         appkit::{NSMainMenuWindowLevel, NSView, NSWindow},
-        base::id,
+        base::{id, nil},
         foundation::{NSPoint, NSRect},
     },
     objc::{class, msg_send, runtime::NO, sel, sel_impl},
@@ -16,7 +19,6 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
     let window = app_handle.get_window("main").unwrap();
 
     let panel_delegate = panel_delegate!(SpotlightPanelDelegate {
-        window_did_become_key,
         window_did_resign_key
     });
 
@@ -24,9 +26,6 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
 
     panel_delegate.set_listener(Box::new(move |delegate_name: String| {
         match delegate_name.as_str() {
-            "window_did_become_key" => {
-                handle.trigger_global("menubar_panel_did_become_key", None);
-            }
             "window_did_resign_key" => {
                 handle.trigger_global("menubar_panel_did_resign_key", None);
             }
@@ -43,14 +42,38 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
     panel.set_delegate(panel_delegate);
 }
 
-pub fn setup_menubar_event_listeners(app_handle: &tauri::AppHandle) {
+pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
+    fn hide_menubar_panel(app_handle: &tauri::AppHandle) {
+        if check_menubar_frontmost() {
+            return;
+        }
+
+        let panel = app_handle.get_panel("main").unwrap();
+
+        panel.order_out(None);
+    }
+
     let handle = app_handle.app_handle();
 
     app_handle.listen_global("menubar_panel_did_resign_key", move |_| {
-        let panel = handle.get_panel("main").unwrap();
-
-        panel.order_out(None);
+        hide_menubar_panel(&handle);
     });
+
+    let handle = app_handle.app_handle();
+
+    let callback = Box::new(move || {
+        hide_menubar_panel(&handle);
+    });
+
+    register_workspace_listener(
+        "NSWorkspaceDidActivateApplicationNotification".into(),
+        callback.clone(),
+    );
+
+    register_workspace_listener(
+        "NSWorkspaceActiveSpaceDidChangeNotification".into(),
+        callback,
+    );
 }
 
 pub fn update_menubar_appearance(app_handle: &tauri::AppHandle) {
@@ -111,4 +134,48 @@ pub fn position_menubar_panel(app_handle: &tauri::AppHandle, padding_top: f64) {
     };
 
     let _: () = unsafe { msg_send![handle, setFrame: win_frame display: NO] };
+}
+
+fn register_workspace_listener(name: String, callback: Box<dyn Fn()>) {
+    let workspace: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
+
+    let notification_center: id = unsafe { msg_send![workspace, notificationCenter] };
+
+    let block = ConcreteBlock::new(move |_notif: id| {
+        callback();
+    });
+
+    let block = block.copy();
+
+    let name: id =
+        unsafe { msg_send![class!(NSString), stringWithCString: CString::new(name).unwrap()] };
+
+    unsafe {
+        let _: () = msg_send![
+            notification_center,
+            addObserverForName: name object: nil queue: nil usingBlock: block
+        ];
+    }
+}
+
+fn app_pid() -> i32 {
+    let process_info: id = unsafe { msg_send![class!(NSProcessInfo), processInfo] };
+
+    let pid: i32 = unsafe { msg_send![process_info, processIdentifier] };
+
+    pid
+}
+
+fn get_frontmost_app_pid() -> i32 {
+    let workspace: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
+
+    let frontmost_application: id = unsafe { msg_send![workspace, frontmostApplication] };
+
+    let pid: i32 = unsafe { msg_send![frontmost_application, processIdentifier] };
+
+    pid
+}
+
+pub fn check_menubar_frontmost() -> bool {
+    get_frontmost_app_pid() == app_pid()
 }

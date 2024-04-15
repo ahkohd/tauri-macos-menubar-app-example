@@ -2,7 +2,7 @@
 name = "tauri-macos-menubar-app-example"
 version = "0.0.0"
 description = "A Tauri App"
-authors = ["you"]
+authors = ["Victor Aremu <me@victorare.mu>"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -11,7 +11,8 @@ edition = "2021"
 tauri-build = { version = "1.5.1", features = [] }
 
 [dependencies]
-tauri = { version = "1.6.1", features = [ "system-tray",
+tauri = { version = "1.6.1", features = [
+  "system-tray",
   "macos-private-api",
   "shell-open",
 ] }
