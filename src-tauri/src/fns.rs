@@ -6,11 +6,13 @@ use tauri_nspanel::{
     cocoa::{
         appkit::{NSMainMenuWindowLevel, NSView, NSWindow},
         base::{id, nil},
-        foundation::{NSPoint, NSRect},
+        foundation::{NSPoint, NSRect, NSSize},
     },
     objc::{class, msg_send, runtime::NO, sel, sel_impl},
     panel_delegate, ManagerExt, WindowExt,
 };
+
+use crate::popover::PopoverView;
 
 #[allow(non_upper_case_globals)]
 const NSWindowStyleMaskNonActivatingPanel: i32 = 1 << 7;
@@ -80,6 +82,8 @@ pub fn update_menubar_appearance(app_handle: &tauri::AppHandle) {
     let window = app_handle.get_window("main").unwrap();
 
     set_corner_radius(&window, 13.0);
+
+    add_popover_view(&window);
 }
 
 pub fn set_corner_radius(window: &tauri::Window, radius: f64) {
@@ -178,4 +182,32 @@ fn get_frontmost_app_pid() -> i32 {
 
 pub fn check_menubar_frontmost() -> bool {
     get_frontmost_app_pid() == app_pid()
+}
+
+pub fn add_popover_view(window: &tauri::Window) {
+    let win = window.clone();
+
+    let handle = win.app_handle();
+    handle
+        .run_on_main_thread(move || {
+            let handle: id = win.ns_window().unwrap() as id;
+
+            let content_frame: NSRect = unsafe { msg_send![handle, frame] };
+
+            let content_view: id = unsafe { msg_send![handle, contentView] };
+
+            let view = PopoverView::default();
+
+            let _frame = NSRect::new(
+                NSPoint::new(0.0, 0.0),
+                NSSize::new(content_frame.size.width, content_frame.size.height),
+            );
+
+            view.set_frame(_frame);
+
+            view.set_parent(content_view);
+
+            view.set_autoresizing();
+        })
+        .unwrap();
 }

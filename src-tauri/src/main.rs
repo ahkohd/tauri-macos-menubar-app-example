@@ -3,6 +3,7 @@
 
 mod command;
 mod fns;
+mod popover;
 mod tray;
 
 use tauri::SystemTray;
