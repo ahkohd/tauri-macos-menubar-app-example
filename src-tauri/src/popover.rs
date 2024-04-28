@@ -21,9 +21,7 @@ use objc2_foundation::{CGPoint, CGRect, CGSize, NSEdgeInsets, NSEdgeInsetsZero};
 const CLS_NAME: &str = "PopoverView";
 
 #[link(name = "Foundation", kind = "framework")]
-extern "C" {
-    // to be added
-}
+extern "C" {}
 
 #[allow(dead_code)]
 pub struct PopoverConfig {
@@ -33,9 +31,31 @@ pub struct PopoverConfig {
     pub border_width: CGFloat,
     pub arrow_height: CGFloat,
     pub arrow_width: CGFloat,
+    pub arrow_position: CGFloat,
     pub corner_radius: CGFloat,
     pub content_edge_insets: NSEdgeInsets,
     pub right_edge_margin: CGFloat,
+}
+
+impl Default for PopoverConfig {
+    fn default() -> Self {
+        let background_color: id = unsafe { msg_send![class!(NSColor), windowBackgroundColor] };
+
+        let border_color: id = unsafe { msg_send![class!(NSColor), whiteColor] };
+
+        Self {
+            popover_to_status_item_margin: 2.0,
+            background_color,
+            border_color,
+            border_width: 2.0,
+            arrow_width: 62.0,
+            arrow_height: 12.0,
+            arrow_position: 0.0,
+            corner_radius: 12.0,
+            content_edge_insets: unsafe { NSEdgeInsetsZero },
+            right_edge_margin: 12.0,
+        }
+    }
 }
 
 pub struct PopoverView;
@@ -60,6 +80,8 @@ impl PopoverView {
         decl.add_ivar::<CGFloat>("arrow_height");
 
         decl.add_ivar::<CGFloat>("arrow_width");
+
+        decl.add_ivar::<CGFloat>("arrow_position");
 
         decl.add_ivar::<CGFloat>("corner_radius");
 
@@ -102,6 +124,11 @@ impl PopoverView {
             decl.add_method(
                 sel!(setArrowWidth:),
                 Self::handle_set_arrow_width as extern "C" fn(&mut Object, Sel, CGFloat),
+            );
+
+            decl.add_method(
+                sel!(setArrowPosition:),
+                Self::handle_set_arrow_position as extern "C" fn(&mut Object, Sel, CGFloat),
             );
 
             decl.add_method(
@@ -151,6 +178,10 @@ impl PopoverView {
         unsafe { this.set_ivar::<CGFloat>("arrow_width", value) };
     }
 
+    extern "C" fn handle_set_arrow_position(this: &mut Object, _: Sel, value: CGFloat) {
+        unsafe { this.set_ivar::<CGFloat>("arrow_position", value) };
+    }
+
     extern "C" fn handle_set_corner_radius(this: &mut Object, _: Sel, value: CGFloat) {
         unsafe { this.set_ivar::<CGFloat>("corner_radius", value) };
     }
@@ -164,11 +195,11 @@ impl PopoverView {
     }
 
     extern "C" fn draw_rect(this: &Object, _: Sel, rect: NSRect) {
-        println!("draw");
-
         let arrow_height = unsafe { this.get_ivar::<CGFloat>("arrow_height") };
 
         let arrow_width = unsafe { this.get_ivar::<CGFloat>("arrow_width") };
+
+        let arrow_position = unsafe { this.get_ivar::<CGFloat>("arrow_position") };
 
         let border_width = unsafe { this.get_ivar::<CGFloat>("border_width") };
 
@@ -194,11 +225,6 @@ impl PopoverView {
             ),
         );
 
-        println!(
-            "background rect x, y => {}, {} w, h => {} {}",
-            bg_rect.origin.x, bg_rect.origin.y, bg_rect.size.width, bg_rect.size.height
-        );
-
         let control_points = unsafe { NSBezierPath::new() };
 
         let window_path = unsafe { NSBezierPath::new() };
@@ -218,7 +244,7 @@ impl PopoverView {
             )
         };
 
-        let x = rect.size.width / 2.0;
+        let x = *arrow_position;
 
         let y_max = bg_rect.origin.y + bg_rect.size.height;
 
@@ -329,40 +355,6 @@ impl PopoverView {
         }
     }
 
-    #[allow(dead_code)]
-    pub fn default() -> Id<PopoverView> {
-        let popover_view: id = unsafe { msg_send![Self::class(), alloc] };
-
-        let popover_view: id = unsafe { msg_send![popover_view, init] };
-
-        let () = unsafe { msg_send![popover_view, setPopoverToStatusItemMargin: 2.0] };
-
-        let bg_color: id = unsafe { msg_send![class!(NSColor), windowBackgroundColor] };
-
-        let () = unsafe { msg_send![popover_view, setBackgroundColor: bg_color] };
-
-        let border_color: id = unsafe { msg_send![class!(NSColor), whiteColor] };
-
-        let () = unsafe { msg_send![popover_view, setBackgroundColor: border_color] };
-
-        let () = unsafe { msg_send![popover_view, setBorderWidth: 2.0] };
-
-        let () = unsafe { msg_send![popover_view, setArrowHeight: 12.0] };
-
-        let () = unsafe { msg_send![popover_view, setArrowWidth: 62.0] };
-
-        let () = unsafe { msg_send![popover_view, setCornerRadius: 12.0] };
-
-        let () = unsafe { msg_send![popover_view, setContentEdgeInsets: NSEdgeInsetsZero ] };
-
-        let () = unsafe { msg_send![popover_view, setRightEdgeMargin: 12.0] };
-
-        let popover_view = unsafe { Id::from_retained_ptr(popover_view as *mut PopoverView) };
-
-        popover_view
-    }
-
-    #[allow(dead_code)]
     pub fn new(config: PopoverConfig) -> Id<PopoverView> {
         let popover_view: id = unsafe { msg_send![Self::class(), alloc] };
 
@@ -381,6 +373,8 @@ impl PopoverView {
         let () = unsafe { msg_send![popover_view, setArrowHeight: config.arrow_height ] };
 
         let () = unsafe { msg_send![popover_view, setArrowWidth: config.arrow_width ] };
+
+        let () = unsafe { msg_send![popover_view, setArrowPosition: config.arrow_position ] };
 
         let () = unsafe { msg_send![popover_view, setCornerRadius: config.corner_radius] };
 

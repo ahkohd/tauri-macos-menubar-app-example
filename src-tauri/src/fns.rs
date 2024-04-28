@@ -12,7 +12,7 @@ use tauri_nspanel::{
     panel_delegate, ManagerExt, WindowExt,
 };
 
-use crate::popover::PopoverView;
+use crate::popover::{PopoverConfig, PopoverView};
 
 #[allow(non_upper_case_globals)]
 const NSWindowStyleMaskNonActivatingPanel: i32 = 1 << 7;
@@ -196,7 +196,11 @@ pub fn add_popover_view(window: &tauri::Window) {
 
             let content_view: id = unsafe { msg_send![handle, contentView] };
 
-            let view = PopoverView::default();
+            let mut view_config = PopoverConfig::default();
+
+            view_config.arrow_position = content_frame.size.width / 2.0;
+
+            let view = PopoverView::new(view_config);
 
             let _frame = NSRect::new(
                 NSPoint::new(0.0, 0.0),
