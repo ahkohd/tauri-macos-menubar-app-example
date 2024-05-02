@@ -43,7 +43,7 @@ impl Default for PopoverConfig {
 
         let border_color: id = unsafe { msg_send![class!(NSColor), whiteColor] };
 
-        let border_color: id = unsafe { msg_send![border_color, colorWithAlphaComponent: 0.2] };
+        let border_color: id = unsafe { msg_send![border_color, colorWithAlphaComponent: 0.1] };
 
         Self {
             popover_to_status_item_margin: 2.0,
