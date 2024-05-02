@@ -43,6 +43,8 @@ impl Default for PopoverConfig {
 
         let border_color: id = unsafe { msg_send![class!(NSColor), whiteColor] };
 
+        let border_color: id = unsafe { msg_send![border_color, colorWithAlphaComponent: 0.2] };
+
         Self {
             popover_to_status_item_margin: 2.0,
             background_color,
@@ -346,6 +348,12 @@ impl PopoverView {
 
         if !border_color.is_null() {
             let () = unsafe { msg_send![*border_color, setStroke] };
+
+            unsafe {
+                window_path.setLineWidth(*border_width);
+
+                window_path.stroke();
+            };
         }
 
         let () = unsafe { msg_send![*bg_color, setFill] };
@@ -366,7 +374,7 @@ impl PopoverView {
 
         let () = unsafe { msg_send![popover_view, setBackgroundColor: config.background_color] };
 
-        let () = unsafe { msg_send![popover_view, setBackgroundColor: config.border_color] };
+        let () = unsafe { msg_send![popover_view, setBorderColor: config.border_color] };
 
         let () = unsafe { msg_send![popover_view, setBorderWidth: config.border_width ] };
 
