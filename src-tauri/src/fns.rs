@@ -1,10 +1,11 @@
 use std::ffi::CString;
 
+use objc2_foundation::NSInteger;
 use tauri::Manager;
 use tauri_nspanel::{
     block::ConcreteBlock,
     cocoa::{
-        appkit::{NSMainMenuWindowLevel, NSView, NSWindow},
+        appkit::NSMainMenuWindowLevel,
         base::{id, nil},
         foundation::{NSPoint, NSRect, NSSize},
     },
@@ -81,23 +82,7 @@ pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
 pub fn update_menubar_appearance(app_handle: &tauri::AppHandle) {
     let window = app_handle.get_window("main").unwrap();
 
-    set_corner_radius(&window, 13.0);
-
     add_popover_view(&window);
-}
-
-pub fn set_corner_radius(window: &tauri::Window, radius: f64) {
-    let win: id = window.ns_window().unwrap() as _;
-
-    unsafe {
-        let view: id = win.contentView();
-
-        view.wantsLayer();
-
-        let layer: id = view.layer();
-
-        let _: () = msg_send![layer, setCornerRadius: radius];
-    }
 }
 
 pub fn position_menubar_panel(app_handle: &tauri::AppHandle, padding_top: f64) {
@@ -184,6 +169,9 @@ pub fn check_menubar_frontmost() -> bool {
     get_frontmost_app_pid() == app_pid()
 }
 
+#[allow(non_upper_case_globals)]
+const NSWindowAnimationBehaviorUtilityWindow: NSInteger = 4;
+
 pub fn add_popover_view(window: &tauri::Window) {
     let win = window.clone();
 
@@ -212,6 +200,10 @@ pub fn add_popover_view(window: &tauri::Window) {
             view.set_parent(content_view);
 
             view.set_autoresizing();
+
+            let () = unsafe {
+                msg_send![handle, setAnimationBehavior: NSWindowAnimationBehaviorUtilityWindow]
+            };
         })
         .unwrap();
 }

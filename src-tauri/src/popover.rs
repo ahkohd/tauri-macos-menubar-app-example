@@ -1,7 +1,7 @@
 use objc2_app_kit::NSBezierPath;
 use tauri_nspanel::{
     cocoa::{
-        appkit::{CGFloat, NSViewHeightSizable, NSViewWidthSizable},
+        appkit::{CGFloat, NSViewHeightSizable, NSViewWidthSizable, NSWindowOrderingMode},
         base::id,
         foundation::{NSPoint, NSRect, NSSize},
     },
@@ -395,7 +395,9 @@ impl PopoverView {
     }
 
     pub fn set_parent(&self, parent_view: id) {
-        let () = unsafe { msg_send![parent_view, addSubview: self] };
+        let () = unsafe {
+            msg_send![parent_view, addSubview: self positioned: NSWindowOrderingMode::NSWindowBelow relativeTo: 0]
+        };
     }
 
     pub fn set_autoresizing(&self) {

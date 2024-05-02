@@ -4,8 +4,8 @@
   line-height: 24px;
   font-weight: 400;
 
-  color: #fff;
-  background-color: #111;
+  color: black;
+  background-color: transparent;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,11 +24,7 @@ body {
 }
 
 body {
-  height: 100vh;
-  width: 100vw;
-
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
+  padding: 16px 3px 3px 3px;
 }
 
 .container {
