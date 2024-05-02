@@ -14,6 +14,12 @@
   -webkit-text-size-adjust: 100%;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: white;
+  }
+}
+
 html,
 body {
   padding: 0;
