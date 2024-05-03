@@ -1,7 +1,7 @@
 use std::ffi::CString;
 
 use objc2_foundation::NSInteger;
-use tauri::Manager;
+use tauri::{LogicalPosition, LogicalSize, Manager};
 use tauri_nspanel::{
     block::ConcreteBlock,
     cocoa::{
@@ -85,7 +85,12 @@ pub fn update_menubar_appearance(app_handle: &tauri::AppHandle) {
     add_popover_view(&window);
 }
 
-pub fn position_menubar_panel(app_handle: &tauri::AppHandle, padding_top: f64) {
+pub fn position_panel_under_menubar_icon(
+    app_handle: &tauri::AppHandle,
+    menubar_icon_position: LogicalPosition<f64>,
+    menubar_icon_size: LogicalSize<f64>,
+    padding_top: f64,
+) {
     let window = app_handle.get_window("main").unwrap();
 
     let monitor = monitor::get_monitor_with_cursor().unwrap();
@@ -98,8 +103,6 @@ pub fn position_menubar_panel(app_handle: &tauri::AppHandle, padding_top: f64) {
 
     let monitor_size = visible_area.size().to_logical::<f64>(scale_factor);
 
-    let mouse_location: NSPoint = unsafe { msg_send![class!(NSEvent), mouseLocation] };
-
     let handle: id = window.ns_window().unwrap() as _;
 
     let mut win_frame: NSRect = unsafe { msg_send![handle, frame] };
@@ -109,18 +112,18 @@ pub fn position_menubar_panel(app_handle: &tauri::AppHandle, padding_top: f64) {
     win_frame.origin.y -= padding_top;
 
     win_frame.origin.x = {
-        let top_right = mouse_location.x + (win_frame.size.width / 2.0);
+        let top_right = menubar_icon_position.x + (win_frame.size.width / 2.0);
 
         let is_offscreen = top_right > monitor_pos.x + monitor_size.width;
 
         if !is_offscreen {
-            mouse_location.x - (win_frame.size.width / 2.0)
+            menubar_icon_position.x - (win_frame.size.width / 2.0)
         } else {
             let diff = top_right - (monitor_pos.x + monitor_size.width);
 
-            mouse_location.x - (win_frame.size.width / 2.0) - diff
+            menubar_icon_position.x - (win_frame.size.width / 2.0) - diff
         }
-    };
+    } + menubar_icon_size.width / 2.0;
 
     let _: () = unsafe { msg_send![handle, setFrame: win_frame display: NO] };
 }
