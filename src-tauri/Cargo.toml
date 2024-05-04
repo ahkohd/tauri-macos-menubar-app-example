@@ -21,8 +21,7 @@ serde_json = "1.0"
 
 tauri-nspanel = { git = "https://github.com/ahkohd/tauri-nspanel", branch = "main" }
 monitor = { git = "https://github.com/ahkohd/tauri-toolkit", branch = "main" }
-objc2-foundation = { version = "0.2.0", features = ["NSGeometry"] }
-objc2-app-kit = { version = "0.2.0", features = ["NSBezierPath"] }
+popover = { git = "https://github.com/ahkohd/tauri-toolkit", branch = "main" }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

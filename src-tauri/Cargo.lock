@@ -1629,11 +1629,11 @@ dependencies = [
 [[package]]
 name = "monitor"
 version = "0.1.0"
-source = "git+https://github.com/ahkohd/tauri-toolkit?branch=main#ecbe3b9c48354da00278d31fc946f3dda0e84273"
+source = "git+https://github.com/ahkohd/tauri-toolkit?branch=main#187b09dc21f01b0cb8c809967a43445050b9b1b6"
 dependencies = [
  "cocoa 0.25.0",
  "core-foundation",
- "core-graphics 0.22.3",
+ "core-graphics 0.23.2",
  "objc",
  "serde",
  "tauri",
@@ -2098,6 +2098,24 @@ dependencies = [
  "fdeflate",
  "flate2",
  "miniz_oxide",
+]
+
+[[package]]
+name = "popover"
+version = "0.1.0"
+source = "git+https://github.com/ahkohd/tauri-toolkit?branch=main#187b09dc21f01b0cb8c809967a43445050b9b1b6"
+dependencies = [
+ "cocoa 0.25.0",
+ "core-foundation",
+ "core-graphics 0.23.2",
+ "objc",
+ "objc-foundation",
+ "objc2-app-kit",
+ "objc2-foundation",
+ "objc_id",
+ "serde",
+ "tauri",
+ "thiserror",
 ]
 
 [[package]]
@@ -2891,8 +2909,7 @@ name = "tauri-macos-menubar-app-example"
 version = "0.0.0"
 dependencies = [
  "monitor",
- "objc2-app-kit",
- "objc2-foundation",
+ "popover",
  "serde",
  "serde_json",
  "tauri",

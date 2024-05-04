@@ -1,19 +1,18 @@
 use std::ffi::CString;
 
-use objc2_foundation::NSInteger;
 use tauri::{LogicalPosition, LogicalSize, Manager};
 use tauri_nspanel::{
     block::ConcreteBlock,
     cocoa::{
         appkit::NSMainMenuWindowLevel,
         base::{id, nil},
-        foundation::{NSPoint, NSRect, NSSize},
+        foundation::NSRect,
     },
     objc::{class, msg_send, runtime::NO, sel, sel_impl},
     panel_delegate, ManagerExt, WindowExt,
 };
 
-use crate::popover::{PopoverConfig, PopoverView};
+use popover;
 
 #[allow(non_upper_case_globals)]
 const NSWindowStyleMaskNonActivatingPanel: i32 = 1 << 7;
@@ -82,7 +81,7 @@ pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
 pub fn update_menubar_appearance(app_handle: &tauri::AppHandle) {
     let window = app_handle.get_window("main").unwrap();
 
-    add_popover_view(&window);
+    popover::add_view(&window, None);
 }
 
 pub fn position_panel_under_menubar_icon(
@@ -170,43 +169,4 @@ fn get_frontmost_app_pid() -> i32 {
 
 pub fn check_menubar_frontmost() -> bool {
     get_frontmost_app_pid() == app_pid()
-}
-
-#[allow(non_upper_case_globals)]
-const NSWindowAnimationBehaviorUtilityWindow: NSInteger = 4;
-
-pub fn add_popover_view(window: &tauri::Window) {
-    let win = window.clone();
-
-    let handle = win.app_handle();
-    handle
-        .run_on_main_thread(move || {
-            let handle: id = win.ns_window().unwrap() as id;
-
-            let content_frame: NSRect = unsafe { msg_send![handle, frame] };
-
-            let content_view: id = unsafe { msg_send![handle, contentView] };
-
-            let mut view_config = PopoverConfig::default();
-
-            view_config.arrow_position = content_frame.size.width / 2.0;
-
-            let view = PopoverView::new(view_config);
-
-            let _frame = NSRect::new(
-                NSPoint::new(0.0, 0.0),
-                NSSize::new(content_frame.size.width, content_frame.size.height),
-            );
-
-            view.set_frame(_frame);
-
-            view.set_parent(content_view);
-
-            view.set_autoresizing();
-
-            let () = unsafe {
-                msg_send![handle, setAnimationBehavior: NSWindowAnimationBehaviorUtilityWindow]
-            };
-        })
-        .unwrap();
 }
