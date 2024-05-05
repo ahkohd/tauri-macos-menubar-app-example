@@ -10,10 +10,13 @@ pub fn handle(app_handle: &AppHandle, event: SystemTrayEvent) {
 
             if panel.is_visible() {
                 panel.order_out(None);
+
                 return;
             }
 
-            let scale_factor = monitor::get_monitor_with_cursor().unwrap().scale_factor();
+            let monitor_with_cursor = monitor::get_monitor_with_cursor().unwrap();
+
+            let scale_factor = monitor_with_cursor.scale_factor();
 
             position_panel_under_menubar_icon(
                 &app_handle,
