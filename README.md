@@ -46,8 +46,8 @@ See it in action:
 
 The following are related to this project:
 
-- [tauri-nspanel](https://github.com/ahkohd/tauri-nspanel/tree/main/examples/vanilla): A Tauri plugin that enables the transformation of a standard application window into a panel, providing panel-specific functionalities and methods. It is designed for versatile application across various projects.
-- [tauri-plugin-spotlight](https://github.com/zzzze/tauri-plugin-spotlight): Also a Tauri plugin that helps you to emulate a spotlight window behavior. Unlike the `tauri-nspanel` or this example project, it does not utilize a panel. As a result, its ability to draw over fullscreen applications on newer macOS versions may be limited.
+- [tauri-nspanel](https://github.com/ahkohd/tauri-nspanel/tree/main/examples/vanilla): Tauri plugin to convert a window to panel.
+- [tauri-plugin-spotlight](https://github.com/zzzze/tauri-plugin-spotlight): Tauri plugin that provides a MacOS Spotlight-like search functionality for Tauri windows.
 
 # License
 
