@@ -1,7 +1,7 @@
-use tauri::{AppHandle, SystemTrayEvent};
+use tauri::{AppHandle, Manager, SystemTrayEvent};
 use tauri_nspanel::ManagerExt;
 
-use crate::fns::position_panel_under_menubar_icon;
+use crate::fns::position_panel_at_menubar_icon;
 
 pub fn handle(app_handle: &AppHandle, event: SystemTrayEvent) {
     match event {
@@ -18,14 +18,23 @@ pub fn handle(app_handle: &AppHandle, event: SystemTrayEvent) {
 
             let scale_factor = monitor_with_cursor.scale_factor();
 
-            position_panel_under_menubar_icon(
+            position_panel_at_menubar_icon(
                 &app_handle,
                 position.to_logical(scale_factor),
                 size.to_logical(scale_factor),
                 0.0,
             );
 
-            panel.show();
+            let window = app_handle.get_window("main").unwrap();
+
+            let window_monitor = window.current_monitor().unwrap().unwrap();
+
+            let is_window_in_monitor_with_cursor =
+                window_monitor.position().x as f64 == monitor_with_cursor.position().x;
+
+            if is_window_in_monitor_with_cursor {
+                panel.show();
+            }
         }
         _ => {}
     }

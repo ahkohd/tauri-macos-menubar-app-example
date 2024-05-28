@@ -84,10 +84,10 @@ pub fn update_menubar_appearance(app_handle: &tauri::AppHandle) {
     popover::add_view(&window, None);
 }
 
-pub fn position_panel_under_menubar_icon(
+pub fn position_panel_at_menubar_icon(
     app_handle: &tauri::AppHandle,
-    menubar_icon_position: LogicalPosition<f64>,
-    menubar_icon_size: LogicalSize<f64>,
+    icon_position: LogicalPosition<f64>,
+    icon_size: LogicalSize<f64>,
     padding_top: f64,
 ) {
     let window = app_handle.get_window("main").unwrap();
@@ -110,19 +110,7 @@ pub fn position_panel_under_menubar_icon(
 
     win_frame.origin.y -= padding_top;
 
-    win_frame.origin.x = {
-        let top_right = menubar_icon_position.x + (win_frame.size.width / 2.0);
-
-        let is_offscreen = top_right > monitor_pos.x + monitor_size.width;
-
-        if !is_offscreen {
-            menubar_icon_position.x - (win_frame.size.width / 2.0)
-        } else {
-            let diff = top_right - (monitor_pos.x + monitor_size.width);
-
-            menubar_icon_position.x - (win_frame.size.width / 2.0) - diff
-        }
-    } + menubar_icon_size.width / 2.0;
+    win_frame.origin.x = icon_position.x + icon_size.width / 2.0 - win_frame.size.width / 2.0;
 
     let _: () = unsafe { msg_send![handle, setFrame: win_frame display: NO] };
 }
