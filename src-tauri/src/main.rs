@@ -5,7 +5,7 @@ mod command;
 mod fns;
 mod tray;
 
-use tauri::SystemTray;
+use tauri::Manager;
 use tauri_nspanel;
 
 fn main() {
@@ -15,10 +15,13 @@ fn main() {
             command::show_menubar_panel
         ])
         .plugin(tauri_nspanel::init())
-        .system_tray(SystemTray::new())
-        .on_system_tray_event(tray::handle)
         .setup(|app| {
             app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+
+            let app_handle = app.app_handle();
+
+            tray::create(&app_handle)?;
+
             Ok(())
         })
         .run(tauri::generate_context!())

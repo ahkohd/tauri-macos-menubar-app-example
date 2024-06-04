@@ -1,6 +1,6 @@
 use std::ffi::CString;
 
-use tauri::Manager;
+use tauri::{AppHandle, Manager, WebviewWindow};
 use tauri_nspanel::{
     block::ConcreteBlock,
     cocoa::{
@@ -9,25 +9,25 @@ use tauri_nspanel::{
         foundation::{NSPoint, NSRect},
     },
     objc::{class, msg_send, runtime::NO, sel, sel_impl},
-    panel_delegate, ManagerExt, WindowExt,
+    panel_delegate, ManagerExt, WebviewWindowExt,
 };
 
 #[allow(non_upper_case_globals)]
 const NSWindowStyleMaskNonActivatingPanel: i32 = 1 << 7;
 
 pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
-    let window = app_handle.get_window("main").unwrap();
+    let window = app_handle.get_webview_window("main").unwrap();
 
     let panel_delegate = panel_delegate!(SpotlightPanelDelegate {
         window_did_resign_key
     });
 
-    let handle = window.app_handle();
+    let handle = app_handle.clone();
 
     panel_delegate.set_listener(Box::new(move |delegate_name: String| {
         match delegate_name.as_str() {
             "window_did_resign_key" => {
-                handle.trigger_global("menubar_panel_did_resign_key", None);
+                let _ = handle.emit("menubar_panel_did_resign_key", ());
             }
             _ => (),
         }
@@ -42,24 +42,24 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
     panel.set_delegate(panel_delegate);
 }
 
-pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
+pub fn setup_menubar_panel_listeners(app_handle: &AppHandle) {
     fn hide_menubar_panel(app_handle: &tauri::AppHandle) {
         if check_menubar_frontmost() {
             return;
         }
 
-        let panel = app_handle.get_panel("main").unwrap();
+        let panel = app_handle.get_webview_panel("main").unwrap();
 
         panel.order_out(None);
     }
 
-    let handle = app_handle.app_handle();
+    let handle = app_handle.clone();
 
-    app_handle.listen_global("menubar_panel_did_resign_key", move |_| {
+    app_handle.listen_any("menubar_panel_did_resign_key", move |_| {
         hide_menubar_panel(&handle);
     });
 
-    let handle = app_handle.app_handle();
+    let handle = app_handle.clone();
 
     let callback = Box::new(move || {
         hide_menubar_panel(&handle);
@@ -76,13 +76,13 @@ pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
     );
 }
 
-pub fn update_menubar_appearance(app_handle: &tauri::AppHandle) {
-    let window = app_handle.get_window("main").unwrap();
+pub fn update_menubar_appearance(app_handle: &AppHandle) {
+    let window = app_handle.get_webview_window("main").unwrap();
 
     set_corner_radius(&window, 13.0);
 }
 
-pub fn set_corner_radius(window: &tauri::Window, radius: f64) {
+pub fn set_corner_radius(window: &WebviewWindow, radius: f64) {
     let win: id = window.ns_window().unwrap() as _;
 
     unsafe {
@@ -97,7 +97,7 @@ pub fn set_corner_radius(window: &tauri::Window, radius: f64) {
 }
 
 pub fn position_menubar_panel(app_handle: &tauri::AppHandle, padding_top: f64) {
-    let window = app_handle.get_window("main").unwrap();
+    let window = app_handle.get_webview_window("main").unwrap();
 
     let monitor = monitor::get_monitor_with_cursor().unwrap();
 
