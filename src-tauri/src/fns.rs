@@ -4,7 +4,7 @@ use tauri::{LogicalPosition, LogicalSize, Manager};
 use tauri_nspanel::{
     block::ConcreteBlock,
     cocoa::{
-        appkit::NSMainMenuWindowLevel,
+        appkit::{NSMainMenuWindowLevel, NSWindowCollectionBehavior},
         base::{id, nil},
         foundation::NSRect,
     },
@@ -38,6 +38,12 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
     let panel = window.to_panel().unwrap();
 
     panel.set_level(NSMainMenuWindowLevel + 1);
+
+    panel.set_collection_behaviour(
+        NSWindowCollectionBehavior::NSWindowCollectionBehaviorCanJoinAllSpaces
+            | NSWindowCollectionBehavior::NSWindowCollectionBehaviorStationary
+            | NSWindowCollectionBehavior::NSWindowCollectionBehaviorFullScreenAuxiliary,
+    );
 
     panel.set_style_mask(NSWindowStyleMaskNonActivatingPanel);
 
