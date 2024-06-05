@@ -47,7 +47,6 @@ See it in action:
 The following are related to this project:
 
 - [tauri-nspanel](https://github.com/ahkohd/tauri-nspanel/tree/main/examples/vanilla): Tauri plugin to convert a window to panel.
-- [tauri-plugin-spotlight](https://github.com/zzzze/tauri-plugin-spotlight): Tauri plugin that provides a MacOS Spotlight-like search functionality for Tauri windows.
 
 # License
 
