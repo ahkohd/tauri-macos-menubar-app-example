@@ -1,4 +1,4 @@
-# Tauri macOS Menubar App Example
+# Tauri macOS Menubar App Example (w/ Popover)
 
 This is an example project that shows how to create a macOS Menubar app using Tauri.
 
