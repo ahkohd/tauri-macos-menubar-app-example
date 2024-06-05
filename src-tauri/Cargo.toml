@@ -1,6 +1,6 @@
 [package]
 name = "tauri-macos-menubar-app-example"
-version = "0.0.0"
+version = "0.2.0"
 description = "A Tauri App"
 authors = ["Victor Aremu <me@victorare.mu>"]
 edition = "2021"
@@ -8,22 +8,23 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5.2", features = [] }
+tauri-build = { version = "2.0.0-beta.17", features = [] }
 
 [dependencies]
-tauri = { version = "1.6.7", features = [
-  "system-tray",
+tauri = { version = "2.0.0-beta.22", features = [
   "macos-private-api",
-  "shell-open",
+  "tray-icon",
+  "image-png",
 ] }
 serde = { version = "1.0.200", features = ["derive"] }
 serde_json = "1.0.116"
 
-tauri-nspanel = { git = "https://github.com/ahkohd/tauri-nspanel", branch = "v1" }
-monitor = { git = "https://github.com/ahkohd/tauri-toolkit", branch = "main" }
-popover = { git = "https://github.com/ahkohd/tauri-toolkit", branch = "main" }
+tauri-nspanel = { git = "https://github.com/ahkohd/tauri-nspanel", branch = "v2" }
+monitor = { git = "https://github.com/ahkohd/tauri-toolkit", branch = "v2" }
+popover = { git = "https://github.com/ahkohd/tauri-toolkit", branch = "v2" }
 
 tokio = { version = "1.37.0", features = ["time"] }
+tauri-plugin-shell = "2.0.0-beta.7"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

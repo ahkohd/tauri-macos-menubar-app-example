@@ -9,7 +9,7 @@ use tauri_nspanel::{
         foundation::NSRect,
     },
     objc::{class, msg_send, runtime::NO, sel, sel_impl},
-    panel_delegate, ManagerExt, WindowExt,
+    panel_delegate, ManagerExt, WebviewWindowExt,
 };
 
 use popover;
@@ -18,18 +18,18 @@ use popover;
 const NSWindowStyleMaskNonActivatingPanel: i32 = 1 << 7;
 
 pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
-    let window = app_handle.get_window("main").unwrap();
+    let window = app_handle.get_webview_window("main").unwrap();
 
     let panel_delegate = panel_delegate!(SpotlightPanelDelegate {
         window_did_resign_key
     });
 
-    let handle = window.app_handle();
+    let handle = window.app_handle().clone();
 
     panel_delegate.set_listener(Box::new(move |delegate_name: String| {
         match delegate_name.as_str() {
             "window_did_resign_key" => {
-                handle.trigger_global("menubar_panel_did_resign_key", None);
+                let _ = handle.emit("menubar_panel_did_resign_key", ());
             }
             _ => (),
         }
@@ -56,18 +56,18 @@ pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
             return;
         }
 
-        let panel = app_handle.get_panel("main").unwrap();
+        let panel = app_handle.get_webview_panel("main").unwrap();
 
         panel.order_out(None);
     }
 
-    let handle = app_handle.app_handle();
+    let handle = app_handle.clone();
 
-    app_handle.listen_global("menubar_panel_did_resign_key", move |_| {
+    app_handle.listen("menubar_panel_did_resign_key", move |_| {
         hide_menubar_panel(&handle);
     });
 
-    let handle = app_handle.app_handle();
+    let handle = app_handle.clone();
 
     let callback = Box::new(move || {
         hide_menubar_panel(&handle);
@@ -85,7 +85,7 @@ pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
 }
 
 pub fn update_menubar_appearance(app_handle: &tauri::AppHandle) {
-    let window = app_handle.get_window("main").unwrap();
+    let window = app_handle.get_webview_window("main").unwrap();
 
     popover::add_view(&window, None);
 }
@@ -96,7 +96,7 @@ pub fn position_panel_at_menubar_icon(
     icon_size: LogicalSize<f64>,
     padding_top: f64,
 ) {
-    let window = app_handle.get_window("main").unwrap();
+    let window = app_handle.get_webview_window("main").unwrap();
 
     let monitor = monitor::get_monitor_with_cursor().unwrap();
 

@@ -21,7 +21,7 @@ pub fn init(app_handle: tauri::AppHandle) {
 
 #[tauri::command]
 pub fn show_menubar_panel(app_handle: tauri::AppHandle) {
-    let panel = app_handle.get_panel("main").unwrap();
+    let panel = app_handle.get_webview_panel("main").unwrap();
 
     panel.show();
 }

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { invoke } from "@tauri-apps/api/tauri";
 
 import "./App.css";
+import { invoke } from "@tauri-apps/api/core";
 
 function App() {
   useEffect(() => {
