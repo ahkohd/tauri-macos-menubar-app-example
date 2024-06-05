@@ -2,6 +2,8 @@
 
 This is an example project that shows how to create a macOS Menubar app using Tauri.
 
+> Check out the [v2-popover](https://github.com/ahkohd/tauri-macos-menubar-app-example/tree/v2-popover) branch for an example of the menubar app, now featuring a popover view.
+
 This template is based on Tauri + React + Typescript template. It should help get you started developing with Tauri, React and Typescript in Vite.
 
 ## Prerequisites
@@ -47,7 +49,6 @@ See it in action:
 The following are related to this project:
 
 - [tauri-nspanel](https://github.com/ahkohd/tauri-nspanel/tree/main/examples/vanilla): Tauri plugin to convert a window to panel.
-- [tauri-plugin-spotlight](https://github.com/zzzze/tauri-plugin-spotlight): Tauri plugin that provides a MacOS Spotlight-like search functionality for Tauri windows.
 
 # License
 
