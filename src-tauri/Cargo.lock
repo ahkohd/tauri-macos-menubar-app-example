@@ -1617,6 +1617,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "menubar"
+version = "0.1.0"
+source = "git+https://github.com/ahkohd/tauri-toolkit?branch=v1#06168ebee6e9c002f87140745b20f5df3edafc7a"
+dependencies = [
+ "cocoa 0.25.0",
+ "objc",
+ "serde",
+ "tauri",
+ "thiserror",
+]
+
+[[package]]
 name = "miniz_oxide"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2953,6 +2965,7 @@ dependencies = [
 name = "tauri-macos-menubar-app-example"
 version = "0.0.0"
 dependencies = [
+ "menubar",
  "monitor",
  "popover",
  "serde",
