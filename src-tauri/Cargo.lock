@@ -1701,6 +1701,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "menubar"
+version = "0.1.0"
+source = "git+https://github.com/ahkohd/tauri-toolkit?branch=v2#d3263d7d2d1b88c45151e4074c47ae5366b35523"
+dependencies = [
+ "cocoa",
+ "objc",
+ "serde",
+ "tauri",
+ "thiserror",
+]
+
+[[package]]
 name = "mime"
 version = "0.3.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1730,7 +1742,7 @@ dependencies = [
 [[package]]
 name = "monitor"
 version = "0.1.0"
-source = "git+https://github.com/ahkohd/tauri-toolkit?branch=v2#5e91cfb6eb8370474e9828f2b100aef0e368aaf7"
+source = "git+https://github.com/ahkohd/tauri-toolkit?branch=v2#d3263d7d2d1b88c45151e4074c47ae5366b35523"
 dependencies = [
  "cocoa",
  "core-foundation",
@@ -2305,7 +2317,7 @@ dependencies = [
 [[package]]
 name = "popover"
 version = "0.1.0"
-source = "git+https://github.com/ahkohd/tauri-toolkit?branch=v2#5e91cfb6eb8370474e9828f2b100aef0e368aaf7"
+source = "git+https://github.com/ahkohd/tauri-toolkit?branch=v2#d3263d7d2d1b88c45151e4074c47ae5366b35523"
 dependencies = [
  "cocoa",
  "core-foundation",
@@ -3223,6 +3235,7 @@ dependencies = [
 name = "tauri-macos-menubar-app-example"
 version = "0.2.0"
 dependencies = [
+ "menubar",
  "monitor",
  "popover",
  "serde",

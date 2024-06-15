@@ -102,19 +102,20 @@ pub fn position_panel_at_menubar_icon(
 
     let scale_factor = monitor.scale_factor();
 
-    let visible_area = monitor.visible_area();
+    let monitor_pos = monitor.position().to_logical::<f64>(scale_factor);
 
-    let monitor_pos = visible_area.position().to_logical::<f64>(scale_factor);
+    let monitor_size = monitor.size().to_logical::<f64>(scale_factor);
 
-    let monitor_size = visible_area.size().to_logical::<f64>(scale_factor);
+    let menubar_height = menubar::get_menubar().height();
 
     let handle: id = window.ns_window().unwrap() as _;
 
     let mut win_frame: NSRect = unsafe { msg_send![handle, frame] };
 
-    win_frame.origin.y = (monitor_pos.y + monitor_size.height) - win_frame.size.height;
+    win_frame.origin.y =
+        (monitor_pos.y + monitor_size.height) - menubar_height - win_frame.size.height;
 
-    win_frame.origin.y -= padding_top;
+    win_frame.origin.y -= padding_top * scale_factor;
 
     win_frame.origin.x = icon_position.x + icon_size.width / 2.0 - win_frame.size.width / 2.0;
 
