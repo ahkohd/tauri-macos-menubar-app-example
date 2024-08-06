@@ -1,6 +1,6 @@
 use std::ffi::CString;
 
-use tauri::{LogicalPosition, LogicalSize, Manager};
+use tauri::{Emitter, Listener, LogicalPosition, LogicalSize, Manager};
 use tauri_nspanel::{
     block::ConcreteBlock,
     cocoa::{
