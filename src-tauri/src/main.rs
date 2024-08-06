@@ -6,7 +6,6 @@ mod fns;
 mod tray;
 
 use tauri::Manager;
-use tauri_nspanel;
 
 fn main() {
     tauri::Builder::default()
@@ -20,7 +19,7 @@ fn main() {
 
             let app_handle = app.app_handle();
 
-            tray::create(&app_handle)?;
+            tray::create(app_handle)?;
 
             Ok(())
         })
