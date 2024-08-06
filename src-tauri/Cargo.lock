@@ -3046,6 +3046,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "system-notification"
+version = "0.1.0"
+source = "git+https://github.com/ahkohd/tauri-toolkit?branch=v2#216e552bc344bb4c202121581f023a1787bd9247"
+dependencies = [
+ "block",
+ "cocoa",
+ "objc",
+ "tauri",
+]
+
+[[package]]
 name = "tao"
 version = "0.28.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3209,6 +3220,7 @@ dependencies = [
  "popover",
  "serde",
  "serde_json",
+ "system-notification",
  "tauri",
  "tauri-build",
  "tauri-nspanel",

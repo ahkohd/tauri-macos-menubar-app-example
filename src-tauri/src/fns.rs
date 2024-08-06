@@ -1,11 +1,9 @@
-use std::ffi::CString;
-
+use system_notification::WorkspaceListener;
 use tauri::{Emitter, Listener, LogicalPosition, LogicalSize, Manager};
 use tauri_nspanel::{
-    block::ConcreteBlock,
     cocoa::{
         appkit::{NSMainMenuWindowLevel, NSWindowCollectionBehavior},
-        base::{id, nil},
+        base::id,
         foundation::NSRect,
     },
     objc::{class, msg_send, runtime::NO, sel, sel_impl},
@@ -46,7 +44,7 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
 }
 
 pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
-    fn hide_menubar_panel(app_handle: &tauri::AppHandle) {
+    fn hide_menubar_panel(app_handle: tauri::AppHandle) {
         if check_menubar_frontmost() {
             return;
         }
@@ -59,23 +57,17 @@ pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
     let handle = app_handle.clone();
 
     app_handle.listen("menubar_panel_did_resign_key", move |_| {
-        hide_menubar_panel(&handle);
+        hide_menubar_panel(handle.clone());
     });
 
-    let handle = app_handle.clone();
-
-    let callback = Box::new(move || {
-        hide_menubar_panel(&handle);
-    });
-
-    register_workspace_listener(
-        "NSWorkspaceDidActivateApplicationNotification".into(),
-        callback.clone(),
+    app_handle.listen_workspace(
+        "NSWorkspaceDidActivateApplicationNotification",
+        hide_menubar_panel,
     );
 
-    register_workspace_listener(
-        "NSWorkspaceActiveSpaceDidChangeNotification".into(),
-        callback,
+    app_handle.listen_workspace(
+        "NSWorkspaceActiveSpaceDidChangeNotification",
+        hide_menubar_panel,
     );
 }
 
@@ -115,28 +107,6 @@ pub fn position_panel_at_menubar_icon(
     win_frame.origin.x = icon_position.x + icon_size.width / 2.0 - win_frame.size.width / 2.0;
 
     let _: () = unsafe { msg_send![handle, setFrame: win_frame display: NO] };
-}
-
-fn register_workspace_listener(name: String, callback: Box<dyn Fn()>) {
-    let workspace: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
-
-    let notification_center: id = unsafe { msg_send![workspace, notificationCenter] };
-
-    let block = ConcreteBlock::new(move |_notif: id| {
-        callback();
-    });
-
-    let block = block.copy();
-
-    let name: id =
-        unsafe { msg_send![class!(NSString), stringWithCString: CString::new(name).unwrap()] };
-
-    unsafe {
-        let _: () = msg_send![
-            notification_center,
-            addObserverForName: name object: nil queue: nil usingBlock: block
-        ];
-    }
 }
 
 fn app_pid() -> i32 {
