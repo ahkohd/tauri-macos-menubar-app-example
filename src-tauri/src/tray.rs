@@ -16,23 +16,19 @@ pub fn create(app_handle: &AppHandle) -> tauri::Result<TrayIcon> {
         .on_tray_icon_event(|tray, event| {
             let app_handle = tray.app_handle();
 
-            match event {
-                TrayIconEvent::Click { button_state, .. } => match button_state {
-                    MouseButtonState::Up => {
-                        let panel = app_handle.get_webview_panel("main").unwrap();
+            if let TrayIconEvent::Click { button_state, .. } = event {
+                if button_state == MouseButtonState::Up {
+                    let panel = app_handle.get_webview_panel("main").unwrap();
 
-                        if panel.is_visible() {
-                            panel.order_out(None);
-                            return;
-                        }
-
-                        position_menubar_panel(&app_handle, 0.0);
-
-                        panel.show();
+                    if panel.is_visible() {
+                        panel.order_out(None);
+                        return;
                     }
-                    _ => {}
-                },
-                _ => {}
+
+                    position_menubar_panel(app_handle, 0.0);
+
+                    panel.show();
+                }
             }
         })
         .build(app_handle)
