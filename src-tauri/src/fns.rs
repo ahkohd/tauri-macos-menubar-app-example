@@ -1,6 +1,6 @@
 use std::ffi::CString;
 
-use tauri::{AppHandle, Manager, WebviewWindow};
+use tauri::{AppHandle, Emitter, Listener, Manager, WebviewWindow};
 use tauri_nspanel::{
     block::ConcreteBlock,
     cocoa::{
