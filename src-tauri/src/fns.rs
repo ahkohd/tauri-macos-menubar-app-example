@@ -25,11 +25,8 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
     let handle = window.app_handle();
 
     panel_delegate.set_listener(Box::new(move |delegate_name: String| {
-        match delegate_name.as_str() {
-            "window_did_resign_key" => {
-                handle.trigger_global("menubar_panel_did_resign_key", None);
-            }
-            _ => (),
+        if let "window_did_resign_key" = delegate_name.as_str() {
+            handle.trigger_global("menubar_panel_did_resign_key", None);
         }
     }));
 
