@@ -6,7 +6,6 @@ mod fns;
 mod tray;
 
 use tauri::SystemTray;
-use tauri_nspanel;
 
 fn main() {
     tauri::Builder::default()
