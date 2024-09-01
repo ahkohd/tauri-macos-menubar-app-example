@@ -8,10 +8,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "1.5.1", features = [] }
+tauri-build = { version = "1.5.4", features = [] }
 
 [dependencies]
-tauri = { version = "1.6.2", features = [
+tauri = { version = "1.7.2", features = [
   "system-tray",
   "macos-private-api",
   "shell-open",
