@@ -15,7 +15,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "2.0.0-rc.8",
+    "@tauri-apps/cli": "2.0.0-rc.10",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
