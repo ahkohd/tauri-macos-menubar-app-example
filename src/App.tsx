@@ -8,10 +8,17 @@ function App() {
     invoke("init");
   }, []);
 
+  function handleChangeTitle() {
+    invoke("change_tray_title", {
+      title: "Hello, World!"
+    })
+  }
+
   return (
     <div className="container">
       <h1>Menubar App</h1>
       <p>Your content goes here...</p>
+      <button type="button" onClick={handleChangeTitle}>Change Tray Title</button>
     </div>
   );
 }

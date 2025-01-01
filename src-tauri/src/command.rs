@@ -25,3 +25,14 @@ pub fn show_menubar_panel(app_handle: tauri::AppHandle) {
 
     panel.show();
 }
+
+#[tauri::command]
+pub fn change_tray_title(app_handle: tauri::AppHandle, title: String) {
+    let tray_handle = app_handle.tray_by_id("tray").unwrap();
+
+    if let Err(e) = tray_handle.set_title(Some(&title)) {
+        eprintln!("failed to set title: {}", e);
+    } else {
+        println!("title set successfully to '{}'", title);
+    }
+}
