@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 use system_notification::WorkspaceListener;
 use tauri::{Emitter, Listener, LogicalPosition, LogicalSize, Manager};
 use tauri_nspanel::{
