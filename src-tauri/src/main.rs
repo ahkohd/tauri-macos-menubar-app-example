@@ -48,6 +48,11 @@ fn main() {
             command::run_query,
             command::deploy_edge_function,
             command::get_remote_schema,
+            // Supabase Logs API commands
+            command::query_supabase_logs,
+            command::get_edge_function_logs,
+            command::get_postgres_logs,
+            command::get_auth_logs,
         ])
         .plugin(tauri_nspanel::init())
         .plugin(tauri_plugin_dialog::init())

@@ -448,3 +448,97 @@ pub async fn get_remote_schema(
 
     Ok(schema)
 }
+
+// Supabase Logs API commands
+
+#[tauri::command]
+pub async fn query_supabase_logs(
+    app_handle: tauri::AppHandle,
+    project_id: String,
+    sql: Option<String>,
+    iso_timestamp_start: Option<String>,
+    iso_timestamp_end: Option<String>,
+) -> Result<serde_json::Value, String> {
+    let state = app_handle.state::<Arc<AppState>>();
+    let uuid = Uuid::parse_str(&project_id).map_err(|e| e.to_string())?;
+
+    let project = state.get_project(uuid).await.map_err(|e| e.to_string())?;
+    let project_ref = project
+        .supabase_project_ref
+        .ok_or("Project not linked to Supabase")?;
+
+    let api = state.get_api_client().await.map_err(|e| e.to_string())?;
+
+    api.query_logs(
+        &project_ref,
+        sql.as_deref(),
+        iso_timestamp_start.as_deref(),
+        iso_timestamp_end.as_deref(),
+    )
+    .await
+    .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn get_edge_function_logs(
+    app_handle: tauri::AppHandle,
+    project_id: String,
+    function_name: Option<String>,
+    minutes: Option<u32>,
+) -> Result<serde_json::Value, String> {
+    let state = app_handle.state::<Arc<AppState>>();
+    let uuid = Uuid::parse_str(&project_id).map_err(|e| e.to_string())?;
+
+    let project = state.get_project(uuid).await.map_err(|e| e.to_string())?;
+    let project_ref = project
+        .supabase_project_ref
+        .ok_or("Project not linked to Supabase")?;
+
+    let api = state.get_api_client().await.map_err(|e| e.to_string())?;
+
+    api.get_edge_function_logs(&project_ref, function_name.as_deref(), minutes.unwrap_or(60))
+        .await
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn get_postgres_logs(
+    app_handle: tauri::AppHandle,
+    project_id: String,
+    minutes: Option<u32>,
+) -> Result<serde_json::Value, String> {
+    let state = app_handle.state::<Arc<AppState>>();
+    let uuid = Uuid::parse_str(&project_id).map_err(|e| e.to_string())?;
+
+    let project = state.get_project(uuid).await.map_err(|e| e.to_string())?;
+    let project_ref = project
+        .supabase_project_ref
+        .ok_or("Project not linked to Supabase")?;
+
+    let api = state.get_api_client().await.map_err(|e| e.to_string())?;
+
+    api.get_postgres_logs(&project_ref, minutes.unwrap_or(60))
+        .await
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+pub async fn get_auth_logs(
+    app_handle: tauri::AppHandle,
+    project_id: String,
+    minutes: Option<u32>,
+) -> Result<serde_json::Value, String> {
+    let state = app_handle.state::<Arc<AppState>>();
+    let uuid = Uuid::parse_str(&project_id).map_err(|e| e.to_string())?;
+
+    let project = state.get_project(uuid).await.map_err(|e| e.to_string())?;
+    let project_ref = project
+        .supabase_project_ref
+        .ok_or("Project not linked to Supabase")?;
+
+    let api = state.get_api_client().await.map_err(|e| e.to_string())?;
+
+    api.get_auth_logs(&project_ref, minutes.unwrap_or(60))
+        .await
+        .map_err(|e| e.to_string())
+}

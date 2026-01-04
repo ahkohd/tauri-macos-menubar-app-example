@@ -281,4 +281,134 @@ impl SupabaseApi {
 
         Ok(serde_json::to_string_pretty(&result.result).unwrap_or_default())
     }
+
+    /// Query project logs using SQL
+    ///
+    /// Available log sources: edge_logs, postgres_logs, auth_logs, realtime_logs, storage_logs, postgrest_logs
+    /// If no SQL provided, defaults to querying edge_logs
+    /// Timestamp range must be no more than 24 hours
+    pub async fn query_logs(
+        &self,
+        project_ref: &str,
+        sql: Option<&str>,
+        iso_timestamp_start: Option<&str>,
+        iso_timestamp_end: Option<&str>,
+    ) -> Result<serde_json::Value, ApiError> {
+        let mut url = format!(
+            "{}/v1/projects/{}/analytics/endpoints/logs.all/query",
+            SUPABASE_API_BASE, project_ref
+        );
+
+        let mut query_params = Vec::new();
+        if let Some(sql) = sql {
+            query_params.push(format!("sql={}", urlencoding::encode(sql)));
+        }
+        if let Some(start) = iso_timestamp_start {
+            query_params.push(format!("iso_timestamp_start={}", urlencoding::encode(start)));
+        }
+        if let Some(end) = iso_timestamp_end {
+            query_params.push(format!("iso_timestamp_end={}", urlencoding::encode(end)));
+        }
+
+        if !query_params.is_empty() {
+            url = format!("{}?{}", url, query_params.join("&"));
+        }
+
+        let response = self
+            .client
+            .get(&url)
+            .header("Authorization", self.auth_header())
+            .send()
+            .await?;
+
+        if !response.status().is_success() {
+            let status = response.status().as_u16();
+            let message = response.text().await.unwrap_or_default();
+            return Err(ApiError::ApiError { status, message });
+        }
+
+        Ok(response.json().await?)
+    }
+
+    /// Get edge function logs for the last N minutes
+    pub async fn get_edge_function_logs(
+        &self,
+        project_ref: &str,
+        function_name: Option<&str>,
+        minutes: u32,
+    ) -> Result<serde_json::Value, ApiError> {
+        let now = chrono::Utc::now();
+        let start = now - chrono::Duration::minutes(minutes as i64);
+
+        let sql = if let Some(name) = function_name {
+            format!(
+                r#"select id, timestamp, event_message, metadata, request
+                   from edge_logs
+                   where metadata->>'function_id' = '{}'
+                   order by timestamp desc
+                   limit 100"#,
+                name
+            )
+        } else {
+            r#"select id, timestamp, event_message, metadata, request
+               from edge_logs
+               order by timestamp desc
+               limit 100"#
+                .to_string()
+        };
+
+        self.query_logs(
+            project_ref,
+            Some(&sql),
+            Some(&start.to_rfc3339()),
+            Some(&now.to_rfc3339()),
+        )
+        .await
+    }
+
+    /// Get postgres logs for the last N minutes
+    pub async fn get_postgres_logs(
+        &self,
+        project_ref: &str,
+        minutes: u32,
+    ) -> Result<serde_json::Value, ApiError> {
+        let now = chrono::Utc::now();
+        let start = now - chrono::Duration::minutes(minutes as i64);
+
+        let sql = r#"select id, timestamp, event_message, error_severity, user_name, query
+                     from postgres_logs
+                     order by timestamp desc
+                     limit 100"#;
+
+        self.query_logs(
+            project_ref,
+            Some(sql),
+            Some(&start.to_rfc3339()),
+            Some(&now.to_rfc3339()),
+        )
+        .await
+    }
+
+    /// Get auth logs for the last N minutes
+    pub async fn get_auth_logs(
+        &self,
+        project_ref: &str,
+        minutes: u32,
+    ) -> Result<serde_json::Value, ApiError> {
+        let now = chrono::Utc::now();
+        let start = now - chrono::Duration::minutes(minutes as i64);
+
+        let sql = r#"select id, timestamp, event_message, level, path, status
+                     from auth_logs
+                     order by timestamp desc
+                     limit 100"#;
+
+        self.query_logs(
+            project_ref,
+            Some(sql),
+            Some(&start.to_rfc3339()),
+            Some(&now.to_rfc3339()),
+        )
+        .await
+    }
 }

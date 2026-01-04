@@ -112,3 +112,44 @@ export async function deployEdgeFunction(
 export async function getRemoteSchema(projectId: string): Promise<string> {
   return invoke("get_remote_schema", { projectId });
 }
+
+// Supabase Logs API
+export async function querySupabaseLogs(
+  projectId: string,
+  sql?: string,
+  isoTimestampStart?: string,
+  isoTimestampEnd?: string
+): Promise<unknown> {
+  return invoke("query_supabase_logs", {
+    projectId,
+    sql,
+    isoTimestampStart,
+    isoTimestampEnd,
+  });
+}
+
+export async function getEdgeFunctionLogs(
+  projectId: string,
+  functionName?: string,
+  minutes?: number
+): Promise<unknown> {
+  return invoke("get_edge_function_logs", {
+    projectId,
+    functionName,
+    minutes,
+  });
+}
+
+export async function getPostgresLogs(
+  projectId: string,
+  minutes?: number
+): Promise<unknown> {
+  return invoke("get_postgres_logs", { projectId, minutes });
+}
+
+export async function getAuthLogs(
+  projectId: string,
+  minutes?: number
+): Promise<unknown> {
+  return invoke("get_auth_logs", { projectId, minutes });
+}

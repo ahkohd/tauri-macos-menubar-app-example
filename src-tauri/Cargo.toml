@@ -39,6 +39,7 @@ thiserror = "2"
 
 # HTTP client for Supabase API
 reqwest = { version = "0.12", features = ["json", "multipart"] }
+urlencoding = "2"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
