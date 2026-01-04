@@ -5,6 +5,7 @@ mod command;
 mod fns;
 mod models;
 mod state;
+mod supabase_api;
 mod tray;
 mod watcher;
 
@@ -22,12 +23,20 @@ fn main() {
             // Init commands
             command::init,
             command::show_menubar_panel,
+            // Access token commands
+            command::set_access_token,
+            command::has_access_token,
+            command::clear_access_token,
+            command::validate_access_token,
+            // Remote project commands
+            command::list_remote_projects,
             // Project commands
             command::create_project,
             command::get_projects,
             command::get_project,
             command::update_project,
             command::delete_project,
+            command::link_supabase_project,
             // Watcher commands
             command::start_watching,
             command::stop_watching,
@@ -35,11 +44,10 @@ fn main() {
             // Log commands
             command::get_logs,
             command::clear_logs,
-            // Supabase CLI commands
+            // Supabase API commands
+            command::run_query,
             command::deploy_edge_function,
-            command::run_migration,
-            command::link_supabase_project,
-            command::init_supabase_project,
+            command::get_remote_schema,
         ])
         .plugin(tauri_nspanel::init())
         .plugin(tauri_plugin_dialog::init())

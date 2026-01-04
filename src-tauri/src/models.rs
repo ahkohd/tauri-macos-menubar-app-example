@@ -142,6 +142,9 @@ impl FileChange {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppData {
     pub projects: Vec<Project>,
+    /// Supabase personal access token (stored encrypted in production)
+    #[serde(default)]
+    pub access_token: Option<String>,
     pub version: String,
 }
 
@@ -149,7 +152,18 @@ impl Default for AppData {
     fn default() -> Self {
         Self {
             projects: Vec::new(),
+            access_token: None,
             version: "1.0.0".to_string(),
         }
     }
+}
+
+/// Remote Supabase project info from the API
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RemoteProject {
+    pub id: String,
+    pub name: String,
+    pub organization_id: String,
+    pub region: String,
+    pub created_at: String,
 }

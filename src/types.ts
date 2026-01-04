@@ -32,4 +32,12 @@ export interface FileChange {
   timestamp: string;
 }
 
-export type Tab = "projects" | "logs";
+export type Tab = "projects" | "logs" | "settings";
+
+export interface RemoteProject {
+  id: string;
+  name: string;
+  organization_id: string;
+  region: string;
+  created_at: string;
+}

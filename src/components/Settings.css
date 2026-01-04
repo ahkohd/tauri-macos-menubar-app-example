@@ -1,0 +1,151 @@
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.settings h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-section label {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.settings-section .hint {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.settings-section .hint a {
+  color: #3ecf8e;
+  text-decoration: none;
+}
+
+.settings-section .hint a:hover {
+  text-decoration: underline;
+}
+
+.token-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.token-input-group input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  font-size: 13px;
+  font-family: monospace;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.token-input-group input:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.token-input-group input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.save-token-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #3ecf8e;
+  color: #000;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.save-token-btn:hover:not(:disabled) {
+  background: #4ee39f;
+}
+
+.save-token-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.token-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: rgba(62, 207, 142, 0.1);
+  border: 1px solid rgba(62, 207, 142, 0.2);
+  border-radius: 6px;
+}
+
+.token-saved {
+  font-size: 13px;
+  color: #3ecf8e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.token-saved::before {
+  content: "✓";
+  font-weight: bold;
+}
+
+.clear-token-btn {
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 4px;
+  background: transparent;
+  color: #ff6961;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-token-btn:hover {
+  background: rgba(255, 59, 48, 0.1);
+  border-color: rgba(255, 59, 48, 0.5);
+}
+
+.error-message {
+  padding: 10px 12px;
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 6px;
+  color: #ff6961;
+  font-size: 12px;
+}
+
+.success-message {
+  padding: 10px 12px;
+  background: rgba(62, 207, 142, 0.1);
+  border: 1px solid rgba(62, 207, 142, 0.3);
+  border-radius: 6px;
+  color: #3ecf8e;
+  font-size: 12px;
+}
+
+.about-text {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.5;
+}

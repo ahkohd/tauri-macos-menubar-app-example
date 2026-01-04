@@ -1,14 +1,13 @@
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
-use std::sync::Arc;
 
-use notify_debouncer_mini::DebouncedEventKind;
 use thiserror::Error;
 use tokio::sync::RwLock;
 use uuid::Uuid;
 
 use crate::models::{AppData, LogEntry, Project};
+use crate::supabase_api::SupabaseApi;
 
 #[derive(Error, Debug)]
 pub enum StateError {
@@ -20,6 +19,8 @@ pub enum StateError {
     WriteError(String),
     #[error("Failed to parse data: {0}")]
     ParseError(String),
+    #[error("Access token not configured")]
+    NoAccessToken,
 }
 
 pub type WatcherHandle = notify_debouncer_mini::Debouncer<notify::RecommendedWatcher>;
@@ -189,6 +190,37 @@ impl AppState {
         } else {
             logs.clear();
         }
+    }
+
+    // Access token operations
+    pub async fn set_access_token(&self, token: String) -> Result<(), StateError> {
+        let mut data = self.data.write().await;
+        data.access_token = Some(token);
+        drop(data);
+        self.save().await
+    }
+
+    pub async fn get_access_token(&self) -> Option<String> {
+        let data = self.data.read().await;
+        data.access_token.clone()
+    }
+
+    pub async fn clear_access_token(&self) -> Result<(), StateError> {
+        let mut data = self.data.write().await;
+        data.access_token = None;
+        drop(data);
+        self.save().await
+    }
+
+    pub async fn has_access_token(&self) -> bool {
+        let data = self.data.read().await;
+        data.access_token.is_some()
+    }
+
+    /// Get a Supabase API client using the stored access token
+    pub async fn get_api_client(&self) -> Result<SupabaseApi, StateError> {
+        let token = self.get_access_token().await.ok_or(StateError::NoAccessToken)?;
+        Ok(SupabaseApi::new(token))
     }
 }
 

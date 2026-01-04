@@ -21,6 +21,12 @@ export function Tabs({ activeTab, onTabChange }: TabsProps) {
       >
         Logs
       </button>
+      <button
+        className={`tab ${activeTab === "settings" ? "active" : ""}`}
+        onClick={() => onTabChange("settings")}
+      >
+        Settings
+      </button>
     </div>
   );
 }

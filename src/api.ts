@@ -1,5 +1,27 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { Project, LogEntry } from "./types";
+import type { Project, LogEntry, RemoteProject } from "./types";
+
+// Access Token API
+export async function setAccessToken(token: string): Promise<void> {
+  return invoke("set_access_token", { token });
+}
+
+export async function hasAccessToken(): Promise<boolean> {
+  return invoke("has_access_token");
+}
+
+export async function clearAccessToken(): Promise<void> {
+  return invoke("clear_access_token");
+}
+
+export async function validateAccessToken(): Promise<boolean> {
+  return invoke("validate_access_token");
+}
+
+// Remote Supabase Projects API
+export async function listRemoteProjects(): Promise<RemoteProject[]> {
+  return invoke("list_remote_projects");
+}
 
 // Project API
 export async function createProject(
@@ -32,6 +54,13 @@ export async function deleteProject(id: string): Promise<void> {
   return invoke("delete_project", { id });
 }
 
+export async function linkSupabaseProject(
+  projectId: string,
+  supabaseProjectRef: string
+): Promise<Project> {
+  return invoke("link_supabase_project", { projectId, supabaseProjectRef });
+}
+
 // Watcher API
 export async function startWatching(projectId: string): Promise<void> {
   return invoke("start_watching", { projectId });
@@ -57,28 +86,29 @@ export async function clearLogs(projectId?: string): Promise<void> {
   return invoke("clear_logs", { projectId });
 }
 
-// Supabase CLI API
+// Supabase API
+export async function runQuery(
+  projectId: string,
+  query: string,
+  readOnly?: boolean
+): Promise<unknown> {
+  return invoke("run_query", { projectId, query, readOnly });
+}
+
 export async function deployEdgeFunction(
   projectId: string,
-  functionName: string
+  functionSlug: string,
+  functionName: string,
+  functionPath: string
 ): Promise<string> {
-  return invoke("deploy_edge_function", { projectId, functionName });
+  return invoke("deploy_edge_function", {
+    projectId,
+    functionSlug,
+    functionName,
+    functionPath,
+  });
 }
 
-export async function runMigration(
-  projectId: string,
-  sql: string
-): Promise<string> {
-  return invoke("run_migration", { projectId, sql });
-}
-
-export async function linkSupabaseProject(
-  projectId: string,
-  supabaseProjectRef: string
-): Promise<Project> {
-  return invoke("link_supabase_project", { projectId, supabaseProjectRef });
-}
-
-export async function initSupabaseProject(projectId: string): Promise<string> {
-  return invoke("init_supabase_project", { projectId });
+export async function getRemoteSchema(projectId: string): Promise<string> {
+  return invoke("get_remote_schema", { projectId });
 }
