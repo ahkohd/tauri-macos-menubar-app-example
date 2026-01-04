@@ -1,7 +1,7 @@
 [package]
-name = "tauri-macos-menubar-app-example"
-version = "0.0.0"
-description = "A Tauri App"
+name = "supawatch"
+version = "0.1.0"
+description = "Supabase project sync and watch tool"
 authors = ["Victor Aremu <me@victorare.mu>"]
 edition = "2021"
 
@@ -16,13 +16,26 @@ tauri = { version = "2.5.1", features = [
   "tray-icon",
   "image-png",
 ] }
-serde = { version = "1.0.219", features = ["derive"] }
+serde = { version = "1.0.226", features = ["derive"] }
 serde_json = "1.0.140"
 
 tauri-nspanel = { git = "https://github.com/ahkohd/tauri-nspanel", branch = "v2" }
 monitor = { git = "https://github.com/ahkohd/tauri-toolkit", branch = "v2" }
 
 tauri-plugin-shell = "2.2.1"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+
+# File watching
+notify = "8"
+notify-debouncer-mini = "0.6"
+
+# Utilities
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+tokio = { version = "1", features = ["sync", "rt"] }
+dirs = "6"
+thiserror = "2"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

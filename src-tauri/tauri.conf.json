@@ -16,18 +16,18 @@
       "icons/icon.ico"
     ]
   },
-  "productName": "tauri-macos-menubar-app-example",
-  "version": "0.2.0",
-  "identifier": "com.example.dev",
+  "productName": "Supawatch",
+  "version": "0.1.0",
+  "identifier": "com.supawatch.app",
   "plugins": {},
   "app": {
     "windows": [
       {
         "fullscreen": false,
         "resizable": false,
-        "title": "menubar",
-        "width": 350,
-        "height": 400,
+        "title": "Supawatch",
+        "width": 380,
+        "height": 500,
         "decorations": false,
         "transparent": true,
         "visible": false

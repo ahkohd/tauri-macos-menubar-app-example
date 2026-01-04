@@ -1,6 +1,6 @@
 {
   "identifier": "migrated",
-  "description": "permissions that were migrated from v1",
+  "description": "Supawatch app permissions",
   "local": true,
   "windows": [
     "main"
@@ -12,6 +12,17 @@
     "core:app:default",
     "core:resources:default",
     "core:menu:default",
-    "core:tray:default"
+    "core:tray:default",
+    "dialog:default",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "fs:default",
+    "fs:allow-read-text-file",
+    "fs:allow-write-text-file",
+    "fs:allow-exists",
+    "fs:allow-read-dir",
+    "shell:default",
+    "shell:allow-spawn",
+    "shell:allow-execute"
   ]
 }

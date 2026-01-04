@@ -1,0 +1,117 @@
+.project-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.2s ease;
+}
+
+.project-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.project-item.watching {
+  border-color: rgba(52, 199, 89, 0.3);
+}
+
+.project-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.project-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.status-dot.active {
+  background: #34c759;
+  box-shadow: 0 0 8px rgba(52, 199, 89, 0.5);
+}
+
+.project-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.project-path {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.project-ref {
+  font-size: 11px;
+  color: rgba(52, 199, 89, 0.8);
+  margin-top: 2px;
+}
+
+.project-actions {
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.project-actions.visible {
+  opacity: 1;
+}
+
+.action-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn.start {
+  background: rgba(52, 199, 89, 0.2);
+  color: #34c759;
+}
+
+.action-btn.start:hover {
+  background: rgba(52, 199, 89, 0.3);
+}
+
+.action-btn.stop {
+  background: rgba(255, 149, 0, 0.2);
+  color: #ff9500;
+}
+
+.action-btn.stop:hover {
+  background: rgba(255, 149, 0, 0.3);
+}
+
+.action-btn.delete {
+  background: rgba(255, 59, 48, 0.2);
+  color: #ff3b30;
+}
+
+.action-btn.delete:hover {
+  background: rgba(255, 59, 48, 0.3);
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
