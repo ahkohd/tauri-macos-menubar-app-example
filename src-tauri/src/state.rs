@@ -166,7 +166,8 @@ impl AppState {
 
         // Keep only last 1000 logs
         if logs.len() > 1000 {
-            logs.drain(0..logs.len() - 1000);
+            let drain_count = logs.len() - 1000;
+            logs.drain(0..drain_count);
         }
     }
 

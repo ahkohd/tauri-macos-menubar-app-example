@@ -2,12 +2,12 @@ use std::path::Path;
 use std::sync::Arc;
 use std::time::Duration;
 
-use notify::{Config, RecommendedWatcher, RecursiveMode, Watcher};
-use notify_debouncer_mini::{new_debouncer, DebouncedEvent, DebouncedEventKind};
+use notify::RecursiveMode;
+use notify_debouncer_mini::{new_debouncer, DebouncedEvent};
 use tauri::{AppHandle, Emitter, Manager};
 use uuid::Uuid;
 
-use crate::models::{FileChange, FileChangeType, LogEntry, LogLevel, LogSource};
+use crate::models::{FileChange, FileChangeType, LogEntry, LogSource};
 use crate::state::AppState;
 
 pub fn start_watching(
@@ -20,9 +20,10 @@ pub fn start_watching(
         return Err(format!("Path does not exist: {}", local_path));
     }
 
-    let app_handle = app_handle.clone();
-    let local_path = local_path.to_string();
-    let project_id_clone = project_id;
+    let app_handle_for_closure = app_handle.clone();
+    let app_handle_for_state = app_handle.clone();
+    let local_path_for_closure = local_path.to_string();
+    let local_path_for_log = local_path.to_string();
 
     // Create debouncer with 500ms debounce time
     let mut debouncer = new_debouncer(
@@ -31,7 +32,7 @@ pub fn start_watching(
             match result {
                 Ok(events) => {
                     for event in events {
-                        handle_file_event(&app_handle, project_id_clone, &local_path, event);
+                        handle_file_event(&app_handle_for_closure, project_id, &local_path_for_closure, event);
                     }
                 }
                 Err(e) => {
@@ -49,7 +50,7 @@ pub fn start_watching(
         .map_err(|e| format!("Failed to watch path: {}", e))?;
 
     // Store the watcher handle
-    let state = app_handle.state::<Arc<AppState>>();
+    let state = app_handle_for_state.state::<Arc<AppState>>();
     tauri::async_runtime::block_on(async {
         state.add_watcher(project_id, debouncer).await;
         state.set_project_watching(project_id, true).await.ok();
@@ -57,10 +58,10 @@ pub fn start_watching(
         let log = LogEntry::info(
             Some(project_id),
             LogSource::Watcher,
-            format!("Started watching: {}", local_path),
+            format!("Started watching: {}", local_path_for_log),
         );
         state.add_log(log.clone()).await;
-        app_handle.emit("log", &log).ok();
+        app_handle_for_state.emit("log", &log).ok();
     });
 
     Ok(())
