@@ -1,6 +1,6 @@
 import { useState } from "react";
-import type { Project } from "../types";
 import * as api from "../api";
+import type { Project } from "../types";
 import "./ProjectItem.css";
 
 interface ProjectItemProps {
@@ -31,6 +31,25 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
     }
   };
 
+  const handlePull = async () => {
+    if (
+      !confirm(
+        `Overwrite local changes for "${project.name}"? This cannot be undone.`
+      )
+    )
+      return;
+    setIsLoading(true);
+    try {
+      await api.pullProject(project.id);
+      alert("Project pulled successfully");
+    } catch (err) {
+      console.error("Failed to pull project:", err);
+      alert("Failed to pull project: " + String(err));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (!confirm(`Delete project "${project.name}"?`)) return;
     try {
@@ -56,9 +75,7 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
           {project.local_path}
         </div>
         {project.supabase_project_ref && (
-          <div className="project-ref">
-            {project.supabase_project_ref}
-          </div>
+          <div className="project-ref">{project.supabase_project_ref}</div>
         )}
       </div>
 
@@ -70,6 +87,14 @@ export function ProjectItem({ project, onUpdate, onDelete }: ProjectItemProps) {
           title={isWatching ? "Stop watching" : "Start watching"}
         >
           {isLoading ? "..." : isWatching ? "Stop" : "Watch"}
+        </button>
+        <button
+          className="action-btn pull"
+          onClick={handlePull}
+          disabled={isLoading}
+          title="Pull from remote (overwrites local)"
+        >
+          Pull
         </button>
         <button
           className="action-btn delete"

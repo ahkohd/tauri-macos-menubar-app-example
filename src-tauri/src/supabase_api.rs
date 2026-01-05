@@ -33,13 +33,28 @@ pub struct QueryResponse {
     pub error: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Project {
     pub id: String,
     pub name: String,
     pub organization_id: String,
     pub region: String,
     pub created_at: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Organization {
+    pub id: String,
+    pub name: String,
+}
+
+#[derive(Debug, Serialize)]
+struct CreateProjectBody {
+    name: String,
+    organization_id: String,
+    db_pass: String,
+    region: String,
+    plan: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -49,8 +64,8 @@ pub struct EdgeFunction {
     pub name: String,
     pub status: String,
     pub version: i32,
-    pub created_at: String,
-    pub updated_at: String,
+    pub created_at: serde_json::Value,
+    pub updated_at: serde_json::Value,
 }
 
 #[derive(Debug, Serialize)]
@@ -67,6 +82,11 @@ pub struct DeployResponse {
     pub slug: String,
     pub name: String,
     pub version: i32,
+}
+
+pub struct FunctionBody {
+    pub content_type: String,
+    pub data: Vec<u8>,
 }
 
 pub struct SupabaseApi {
@@ -94,6 +114,62 @@ impl SupabaseApi {
             .client
             .get(&url)
             .header("Authorization", self.auth_header())
+            .send()
+            .await?;
+
+        if !response.status().is_success() {
+            let status = response.status().as_u16();
+            let message = response.text().await.unwrap_or_default();
+            return Err(ApiError::ApiError { status, message });
+        }
+
+        Ok(response.json().await?)
+    }
+
+    /// List all organizations
+    pub async fn list_organizations(&self) -> Result<Vec<Organization>, ApiError> {
+        let url = format!("{}/v1/organizations", SUPABASE_API_BASE);
+
+        let response = self
+            .client
+            .get(&url)
+            .header("Authorization", self.auth_header())
+            .send()
+            .await?;
+
+        if !response.status().is_success() {
+            let status = response.status().as_u16();
+            let message = response.text().await.unwrap_or_default();
+            return Err(ApiError::ApiError { status, message });
+        }
+
+        Ok(response.json().await?)
+    }
+
+    /// Create a new project
+    pub async fn create_project(
+        &self,
+        name: &str,
+        organization_id: &str,
+        db_pass: &str,
+        region: &str,
+    ) -> Result<Project, ApiError> {
+        let url = format!("{}/v1/projects", SUPABASE_API_BASE);
+
+        let body = CreateProjectBody {
+            name: name.to_string(),
+            organization_id: organization_id.to_string(),
+            db_pass: db_pass.to_string(),
+            region: region.to_string(),
+            plan: "free".to_string(), // Defaulting to free plan
+        };
+
+        let response = self
+            .client
+            .post(&url)
+            .header("Authorization", self.auth_header())
+            .header("Content-Type", "application/json")
+            .json(&body)
             .send()
             .await?;
 
@@ -158,7 +234,48 @@ impl SupabaseApi {
             return Err(ApiError::ApiError { status, message });
         }
 
-        Ok(response.json().await?)
+        let body_text = response.text().await?;
+        
+        let val: serde_json::Value = serde_json::from_str(&body_text)
+            .map_err(|e| {
+                 let snippet: String = body_text.chars().take(200).collect();
+                 ApiError::ApiError { 
+                     status: 200, 
+                     message: format!("Failed to parse JSON: {}. Body: {}", e, snippet) 
+                 }
+            })?;
+
+        if val.is_array() {
+            return Ok(QueryResponse {
+                result: Some(val),
+                error: None,
+            });
+        }
+
+        if let serde_json::Value::Object(ref map) = val {
+            if map.contains_key("result") || map.contains_key("error") {
+                 // Try standard deserialization
+                 if let Ok(resp) = serde_json::from_value::<QueryResponse>(val.clone()) {
+                      // Validate inner result is array if present
+                      if let Some(res) = &resp.result {
+                          if !res.is_array() {
+                               return Err(ApiError::ApiError { 
+                                     status: 200, 
+                                     message: format!("Query 'result' is not an array: {:?}. Body: {}", res, body_text)
+                               });
+                          }
+                      }
+                      return Ok(resp);
+                 }
+            }
+        }
+        
+        // If we reached here, it's an object but not a query response, or failed to deserialize
+        let snippet: String = body_text.chars().take(200).collect();
+        Err(ApiError::ApiError { 
+             status: 200, 
+             message: format!("Unexpected response format. Not an array and not a result/error object. Body: {}", snippet) 
+        })
     }
 
     /// List all edge functions for a project
@@ -178,7 +295,17 @@ impl SupabaseApi {
             return Err(ApiError::ApiError { status, message });
         }
 
-        Ok(response.json().await?)
+        let body_text = response.text().await?;
+        match serde_json::from_str::<Vec<EdgeFunction>>(&body_text) {
+            Ok(funcs) => Ok(funcs),
+            Err(e) => {
+                let snippet: String = body_text.chars().take(200).collect();
+                Err(ApiError::ApiError { 
+                    status: 200, 
+                    message: format!("Failed to parse functions list: {}. Body: {}", e, snippet) 
+                })
+            }
+        }
     }
 
     /// Deploy an edge function
@@ -259,6 +386,42 @@ impl SupabaseApi {
         }
 
         Ok(())
+    }
+
+    /// Get edge function body (code)
+    pub async fn get_function_body(
+        &self,
+        project_ref: &str,
+        function_slug: &str,
+    ) -> Result<FunctionBody, ApiError> {
+        let url = format!(
+            "{}/v1/projects/{}/functions/{}/body",
+            SUPABASE_API_BASE, project_ref, function_slug
+        );
+
+        let response = self
+            .client
+            .get(&url)
+            .header("Authorization", self.auth_header())
+            .send()
+            .await?;
+
+        if !response.status().is_success() {
+            let status = response.status().as_u16();
+            let message = response.text().await.unwrap_or_default();
+            return Err(ApiError::ApiError { status, message });
+        }
+
+        let content_type = response
+            .headers()
+            .get("content-type")
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("application/octet-stream")
+            .to_string();
+
+        let data = response.bytes().await?.to_vec();
+
+        Ok(FunctionBody { content_type, data })
     }
 
     /// Get the current database schema (useful for diffing)

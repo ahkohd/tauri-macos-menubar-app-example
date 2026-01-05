@@ -33,13 +33,17 @@ notify-debouncer-mini = "0.6"
 # Utilities
 uuid = { version = "1", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
-tokio = { version = "1", features = ["sync", "rt", "fs"] }
+tokio = { version = "1", features = ["sync", "rt", "fs", "macros"] }
 dirs = "6"
 thiserror = "2"
+once_cell = "1"
 
 # HTTP client for Supabase API
 reqwest = { version = "0.12", features = ["json", "multipart"] }
 urlencoding = "2"
+sqlparser = "0.60.0"
+eszip = "0.106.0"
+futures = "0.3.31"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

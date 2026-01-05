@@ -41,3 +41,8 @@ export interface RemoteProject {
   region: string;
   created_at: string;
 }
+
+export interface Organization {
+  id: string;
+  name: string;
+}

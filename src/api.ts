@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { Project, LogEntry, RemoteProject } from "./types";
+import type { LogEntry, Project, RemoteProject } from "./types";
 
 // Access Token API
 export async function setAccessToken(token: string): Promise<void> {
@@ -23,18 +23,26 @@ export async function listRemoteProjects(): Promise<RemoteProject[]> {
   return invoke("list_remote_projects");
 }
 
+export async function listOrganizations(): Promise<
+  import("./types").Organization[]
+> {
+  return invoke("list_organizations");
+}
+
 // Project API
 export async function createProject(
   name: string,
   localPath: string,
   supabaseProjectId?: string,
-  supabaseProjectRef?: string
+  supabaseProjectRef?: string,
+  organizationId?: string
 ): Promise<Project> {
   return invoke("create_project", {
     name,
     localPath,
     supabaseProjectId,
     supabaseProjectRef,
+    organizationId,
   });
 }
 
@@ -111,6 +119,10 @@ export async function deployEdgeFunction(
 
 export async function getRemoteSchema(projectId: string): Promise<string> {
   return invoke("get_remote_schema", { projectId });
+}
+
+export async function pullProject(projectId: string): Promise<void> {
+  return invoke("pull_project", { projectId });
 }
 
 // Supabase Logs API

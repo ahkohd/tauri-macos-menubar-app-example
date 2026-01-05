@@ -1,0 +1,427 @@
+   Compiling supawatch v0.1.0 (/Users/saxonfletcher/Documents/Repositories/Supawatch/src-tauri)
+error[E0432]: unresolved import `sqlparser::ast::CreatePolicy`
+ --> src/parsing.rs:7:5
+  |
+7 |     CreatePolicy, CreatePolicyCommand, CreateTable, CreateTrigger, DataType, Expr,
+  |     ^^^^^^^^^^^^
+  |     |
+  |     no `CreatePolicy` in `ast`
+  |     help: a similar name exists in the module: `CreatePolicyType`
+  |
+  = help: consider importing one of these variants instead:
+          crate::parsing::Statement::CreatePolicy
+          sqlparser::ast::Statement::CreatePolicy
+
+warning: unused import: `eszip::EszipV2`
+  --> src/command.rs:15:5
+   |
+15 | use eszip::EszipV2;
+   |     ^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` on by default
+
+warning: unused imports: `EnumInfo`, `ForeignKeyInfo`, and `IndexInfo`
+ --> src/diff.rs:2:15
+  |
+2 |     DbSchema, EnumInfo, ForeignKeyInfo, FunctionInfo, IndexInfo, PolicyInfo, TableInfo, TriggerInfo,
+  |               ^^^^^^^^  ^^^^^^^^^^^^^^                ^^^^^^^^^
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+  --> src/fns.rs:21:26
+   |
+21 |       let panel_delegate = panel_delegate!(SpotlightPanelDelegate {
+   |  __________________________^
+22 | |         window_did_resign_key
+23 | |     });
+   | |______^
+   |
+   = note: expected values for `feature` are: `custom-protocol`
+   = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+   = help: try referring to `class` crate for guidance on how handle this unexpected cfg
+   = help: the macro `class` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+   = note: `#[warn(unexpected_cfgs)]` on by default
+   = note: this warning originates in the macro `class` which comes from the expansion of the macro `panel_delegate` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+  --> src/fns.rs:21:26
+   |
+21 |       let panel_delegate = panel_delegate!(SpotlightPanelDelegate {
+   |  __________________________^
+22 | |         window_did_resign_key
+23 | |     });
+   | |______^
+   |
+   = note: expected values for `feature` are: `custom-protocol`
+   = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+   = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+   = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+   = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `panel_delegate` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+  --> src/fns.rs:21:26
+   |
+21 |       let panel_delegate = panel_delegate!(SpotlightPanelDelegate {
+   |  __________________________^
+22 | |         window_did_resign_key
+23 | |     });
+   | |______^
+   |
+   = note: expected values for `feature` are: `custom-protocol`
+   = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+   = help: try referring to `class` crate for guidance on how handle this unexpected cfg
+   = help: the macro `class` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+   = note: this warning originates in the macro `class` which comes from the expansion of the macro `panel_delegate` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:100:21
+    |
+100 |         let _: () = msg_send![layer, setCornerRadius: radius];
+    |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:117:44
+    |
+117 |     let mouse_location: NSPoint = unsafe { msg_send![class!(NSEvent), mouseLocation] };
+    |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:117:54
+    |
+117 |     let mouse_location: NSPoint = unsafe { msg_send![class!(NSEvent), mouseLocation] };
+    |                                                      ^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `class` crate for guidance on how handle this unexpected cfg
+    = help: the macro `class` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `class` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:121:42
+    |
+121 |     let mut win_frame: NSRect = unsafe { msg_send![handle, frame] };
+    |                                          ^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:141:26
+    |
+141 |     let _: () = unsafe { msg_send![handle, setFrame: win_frame display: NO] };
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:145:34
+    |
+145 |     let workspace: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:145:44
+    |
+145 |     let workspace: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
+    |                                            ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `class` crate for guidance on how handle this unexpected cfg
+    = help: the macro `class` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `class` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:147:44
+    |
+147 |     let notification_center: id = unsafe { msg_send![workspace, notificationCenter] };
+    |                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:156:18
+    |
+156 |         unsafe { msg_send![class!(NSString), stringWithCString: CString::new(name).unwrap()] };
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:156:28
+    |
+156 |         unsafe { msg_send![class!(NSString), stringWithCString: CString::new(name).unwrap()] };
+    |                            ^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `class` crate for guidance on how handle this unexpected cfg
+    = help: the macro `class` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `class` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:159:21
+    |
+159 |           let _: () = msg_send![
+    |  _____________________^
+160 | |             notification_center,
+161 | |             addObserverForName: name object: nil queue: nil usingBlock: block
+162 | |         ];
+    | |_________^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:167:37
+    |
+167 |     let process_info: id = unsafe { msg_send![class!(NSProcessInfo), processInfo] };
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:167:47
+    |
+167 |     let process_info: id = unsafe { msg_send![class!(NSProcessInfo), processInfo] };
+    |                                               ^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `class` crate for guidance on how handle this unexpected cfg
+    = help: the macro `class` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `class` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:169:29
+    |
+169 |     let pid: i32 = unsafe { msg_send![process_info, processIdentifier] };
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:175:34
+    |
+175 |     let workspace: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:175:44
+    |
+175 |     let workspace: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
+    |                                            ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `class` crate for guidance on how handle this unexpected cfg
+    = help: the macro `class` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `class` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:177:46
+    |
+177 |     let frontmost_application: id = unsafe { msg_send![workspace, frontmostApplication] };
+    |                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `cargo-clippy`
+   --> src/fns.rs:179:29
+    |
+179 |     let pid: i32 = unsafe { msg_send![frontmost_application, processIdentifier] };
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: expected values for `feature` are: `custom-protocol`
+    = note: using a cfg inside a macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `sel_impl` crate for guidance on how handle this unexpected cfg
+    = help: the macro `sel_impl` may come from an old version of the `objc` crate, try updating your dependency with `cargo update -p objc`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the macro `sel_impl` which comes from the expansion of the macro `msg_send` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unused import: `FunctionArg`
+ --> src/parsing.rs:2:53
+  |
+2 |     ColumnInfo, DbSchema, EnumInfo, ForeignKeyInfo, FunctionArg, FunctionInfo, IndexInfo,
+  |                                                     ^^^^^^^^^^^
+
+warning: unused imports: `CreateFunctionBody`, `DataType`, `Expr`, `FunctionArg as SqlFunctionArg`, `FunctionArgOperator`, `Ident`, `ObjectName`, `Owner`, and `TriggerEvent`
+ --> src/parsing.rs:6:79
+  |
+6 |     AlterTable, AlterTableOperation, ColumnDef, ColumnOption, CreateFunction, CreateFunctionBody,
+  |                                                                               ^^^^^^^^^^^^^^^^^^
+7 |     CreatePolicy, CreatePolicyCommand, CreateTable, CreateTrigger, DataType, Expr,
+  |                                                                    ^^^^^^^^  ^^^^
+8 |     FunctionArg as SqlFunctionArg, FunctionArgOperator, Ident, ObjectName, OperateFunctionArg,
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^  ^^^^^  ^^^^^^^^^^
+9 |     Owner, Statement, TableConstraint, TriggerEvent, TriggerExecBody, TriggerObject, TriggerPeriod,
+  |     ^^^^^                              ^^^^^^^^^^^^
+
+warning: unused variable: `filename`
+   --> src/command.rs:218:30
+    |
+218 | ...   let (filename, is_binary) = if body.content_type == "application/vnd.denoland.eszip" || body.content_type == "application/octet-str...
+    |            ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_filename`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `filename`
+   --> src/command.rs:505:45
+    |
+505 | ...   let (filename, is_binary) = if body.content_type == "application/vnd.denoland.eszip" || body.content_type == "application/octet-str...
+    |            ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_filename`
+
+error[E0164]: expected tuple struct or tuple variant, found struct variant `Statement::CreatePolicy`
+   --> src/parsing.rs:181:13
+    |
+181 | /             Statement::CreatePolicy(CreatePolicy{
+182 | |                 name,
+183 | |                 table_name,
+184 | |                 command,
+...   |
+188 | |                 ..
+189 | |             }) => {
+    | |______________^ not a tuple struct or tuple variant
+    |
+help: the struct variant's fields are being ignored
+    |
+181 -             Statement::CreatePolicy(CreatePolicy{
+182 -                 name,
+183 -                 table_name,
+184 -                 command,
+185 -                 to,
+186 -                 using,
+187 -                 with_check,
+188 -                 ..
+189 -             }) => {
+181 +             Statement::CreatePolicy { name: _, table_name: _, policy_type: _, command: _, to: _, using: _, with_check: _ } => {
+    |
+
+error[E0609]: no field `body` on type `CreateFunctionBody`
+   --> src/parsing.rs:122:39
+    |
+122 |                     match body_struct.body {
+    |                                       ^^^^ unknown field
+
+error[E0599]: no variant or associated item named `ForEach` found for enum `TriggerObject` in the current scope
+   --> src/parsing.rs:156:62
+    |
+156 |                 let orientation = if let Some(TriggerObject::ForEach(tp)) = trigger_object {
+    |                                                              ^^^^^^^ variant or associated item not found in `TriggerObject`
+
+error[E0599]: no variant or associated item named `Row` found for enum `TriggerPeriod` in the current scope
+   --> src/parsing.rs:158:41
+    |
+158 |                          TriggerPeriod::Row => "ROW".to_string(),
+    |                                         ^^^ variant or associated item not found in `TriggerPeriod`
+
+warning: variable does not need to be mutable
+   --> src/diff.rs:363:13
+    |
+363 |         let mut table_diff = TableDiff {
+    |             ----^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` on by default
+
+warning: unused variable: `table_name`
+   --> src/parsing.rs:249:5
+    |
+249 |     table_name: &str,
+    |     ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_table_name`
+
+warning: variable does not need to be mutable
+   --> src/parsing.rs:258:9
+    |
+258 |     let mut fks = Vec::new();
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> src/parsing.rs:259:9
+    |
+259 |     let mut option_indexes = Vec::new();
+    |         ----^^^^^^^^^^^^^^
+    |         |
+    |         help: remove this `mut`
+
+Some errors have detailed explanations: E0164, E0432, E0599, E0609.
+For more information about an error, try `rustc --explain E0164`.
+warning: `supawatch` (bin "supawatch" test) generated 35 warnings (4 duplicates)
+error: could not compile `supawatch` (bin "supawatch" test) due to 5 previous errors; 35 warnings emitted

@@ -2,8 +2,13 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod command;
+mod diff;
 mod fns;
+mod generator;
+mod introspection;
 mod models;
+mod parsing;
+mod schema;
 mod state;
 mod supabase_api;
 mod tray;
@@ -30,6 +35,9 @@ fn main() {
             command::validate_access_token,
             // Remote project commands
             command::list_remote_projects,
+            command::list_organizations,
+            command::pull_project,
+            command::push_project,
             // Project commands
             command::create_project,
             command::get_projects,
