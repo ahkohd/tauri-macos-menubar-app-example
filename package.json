@@ -10,12 +10,12 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "2.10.1",
+    "@tauri-apps/api": "2.11.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "2.10.0",
+    "@tauri-apps/cli": "2.11.4",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",
