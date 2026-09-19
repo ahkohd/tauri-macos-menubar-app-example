@@ -1,66 +1,60 @@
-#![allow(deprecated)]
+#![allow(clippy::unused_unit)]
 
 use system_notification::WorkspaceListener;
-use tauri::{Emitter, Listener, LogicalPosition, LogicalSize, Manager};
+use tauri::{LogicalPosition, Manager, Rect};
 use tauri_nspanel::{
-    cocoa::{
-        appkit::{NSMainMenuWindowLevel, NSWindowCollectionBehavior},
-        base::id,
-        foundation::NSRect,
-    },
-    objc::{class, msg_send, runtime::NO, sel, sel_impl},
-    panel_delegate, ManagerExt, WebviewWindowExt,
+    objc2_app_kit::NSRunningApplication, tauri_panel, CollectionBehavior, ManagerExt, PanelLevel,
+    StyleMask, WebviewWindowExt,
 };
 
-#[allow(non_upper_case_globals)]
-const NSWindowStyleMaskNonActivatingPanel: i32 = 1 << 7;
+tauri_panel! {
+    panel!(MenubarPanel {})
+
+    panel_event!(MenubarPanelEventHandler {
+        window_did_resign_key(notification: &NSNotification) -> ()
+    })
+}
 
 pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
     let window = app_handle.get_webview_window("main").unwrap();
 
-    let panel_delegate = panel_delegate!(SpotlightPanelDelegate {
-        window_did_resign_key
+    let panel = window.to_panel::<MenubarPanel>().unwrap();
+
+    let weak_panel = std::sync::Arc::downgrade(&panel);
+    let event_handler = MenubarPanelEventHandler::new();
+
+    event_handler.window_did_resign_key(move |_| {
+        if let Some(panel) = weak_panel.upgrade() {
+            panel.hide();
+        }
     });
 
-    let handle = window.app_handle().clone();
+    panel.set_level(PanelLevel::Status.value());
 
-    panel_delegate.set_listener(Box::new(move |delegate_name: String| {
-        if delegate_name.as_str() == "window_did_resign_key" {
-            let _ = handle.emit("menubar_panel_did_resign_key", ());
-        }
-    }));
-
-    let panel = window.to_panel().unwrap();
-
-    panel.set_level(NSMainMenuWindowLevel + 1);
-
-    panel.set_collection_behaviour(
-        NSWindowCollectionBehavior::NSWindowCollectionBehaviorCanJoinAllSpaces
-            | NSWindowCollectionBehavior::NSWindowCollectionBehaviorStationary
-            | NSWindowCollectionBehavior::NSWindowCollectionBehaviorFullScreenAuxiliary,
+    panel.set_collection_behavior(
+        CollectionBehavior::new()
+            .can_join_all_spaces()
+            .stationary()
+            .full_screen_auxiliary()
+            .into(),
     );
 
-    panel.set_style_mask(NSWindowStyleMaskNonActivatingPanel);
+    panel
+        .add_style_mask(StyleMask::empty().nonactivating_panel().into())
+        .expect("failed to make menubar panel non-activating");
 
-    panel.set_delegate(panel_delegate);
+    panel.set_event_handler(Some(event_handler.as_ref()));
 }
 
 pub fn setup_menubar_panel_listeners(app_handle: &tauri::AppHandle) {
     fn hide_menubar_panel(app_handle: tauri::AppHandle) {
-        if check_menubar_frontmost() {
+        if NSRunningApplication::currentApplication().isActive() {
             return;
         }
 
         let panel = app_handle.get_webview_panel("main").unwrap();
-
-        panel.order_out(None);
+        panel.hide();
     }
-
-    let handle = app_handle.clone();
-
-    app_handle.listen("menubar_panel_did_resign_key", move |_| {
-        hide_menubar_panel(handle.clone());
-    });
 
     app_handle.listen_workspace(
         "NSWorkspaceDidActivateApplicationNotification",
@@ -81,54 +75,30 @@ pub fn update_menubar_appearance(app_handle: &tauri::AppHandle) {
 
 pub fn position_panel_at_menubar_icon(
     app_handle: &tauri::AppHandle,
-    icon_position: LogicalPosition<f64>,
-    icon_size: LogicalSize<f64>,
+    icon_rect: Rect,
     padding_top: f64,
 ) {
     let window = app_handle.get_webview_window("main").unwrap();
-
-    let monitor = monitor::get_monitor_with_cursor().unwrap();
-
+    let icon_physical_position = icon_rect.position.to_physical::<f64>(1.0);
+    let icon_physical_size = icon_rect.size.to_physical::<f64>(1.0);
+    let icon_center_x = icon_physical_position.x + icon_physical_size.width / 2.0;
+    let icon_center_y = icon_physical_position.y + icon_physical_size.height / 2.0;
+    let monitor = app_handle
+        .monitor_from_point(icon_center_x, icon_center_y)
+        .unwrap()
+        .expect("menubar icon is not on a monitor");
     let scale_factor = monitor.scale_factor();
+    let icon_position = icon_rect.position.to_logical::<f64>(scale_factor);
+    let icon_size = icon_rect.size.to_logical::<f64>(scale_factor);
+    let window_size = window.outer_size().unwrap().to_logical::<f64>(scale_factor);
+    let work_area = monitor.work_area();
+    let work_area_position = work_area.position.to_logical::<f64>(scale_factor);
+    let work_area_size = work_area.size.to_logical::<f64>(scale_factor);
 
-    let monitor_pos = monitor.position().to_logical::<f64>(scale_factor);
+    let left = work_area_position.x;
+    let right = left + work_area_size.width - window_size.width;
+    let x = (icon_position.x + icon_size.width / 2.0 - window_size.width / 2.0).clamp(left, right);
+    let y = work_area_position.y + padding_top;
 
-    let monitor_size = monitor.size().to_logical::<f64>(scale_factor);
-
-    let menubar_height = menubar::get_menubar().height();
-
-    let handle: id = window.ns_window().unwrap() as _;
-
-    let mut win_frame: NSRect = unsafe { msg_send![handle, frame] };
-
-    win_frame.origin.y =
-        (monitor_pos.y + monitor_size.height) - menubar_height - win_frame.size.height;
-
-    win_frame.origin.y -= padding_top * scale_factor;
-
-    win_frame.origin.x = icon_position.x + icon_size.width / 2.0 - win_frame.size.width / 2.0;
-
-    let _: () = unsafe { msg_send![handle, setFrame: win_frame display: NO] };
-}
-
-fn app_pid() -> i32 {
-    let process_info: id = unsafe { msg_send![class!(NSProcessInfo), processInfo] };
-
-    let pid: i32 = unsafe { msg_send![process_info, processIdentifier] };
-
-    pid
-}
-
-fn get_frontmost_app_pid() -> i32 {
-    let workspace: id = unsafe { msg_send![class!(NSWorkspace), sharedWorkspace] };
-
-    let frontmost_application: id = unsafe { msg_send![workspace, frontmostApplication] };
-
-    let pid: i32 = unsafe { msg_send![frontmost_application, processIdentifier] };
-
-    pid
-}
-
-pub fn check_menubar_frontmost() -> bool {
-    get_frontmost_app_pid() == app_pid()
+    window.set_position(LogicalPosition::new(x, y)).unwrap();
 }
