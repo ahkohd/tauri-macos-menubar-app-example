@@ -7,14 +7,14 @@ This template is based on Tauri + React + Typescript template. It should help ge
 ## Prerequisites
 
 - _[<ins>Node.js<ins>](https://nodejs.org)_
-- _[<ins>Tauri CLI<ins>](https://tauri.studio/docs/getting-started/installation)_
+- _[<ins>Tauri prerequisites<ins>](https://v2.tauri.app/start/prerequisites/)_
 
 ## Getting Started
 
 1. Clone this repository:
 
 ```
-git clone https://github.com/ahkohd/tauri-macos-menubar-app-example.git
+git clone --branch v2-popover https://github.com/ahkohd/tauri-macos-menubar-app-example.git
 ```
 
 2. Navigate to the project directory:
@@ -30,7 +30,7 @@ pnpm install
 pnpm tauri dev
 ```
 
-5. Go to your menubar, click the Tauri tray icon.
+4. Go to your menubar and click the Tauri tray icon.
 
 ## Demo
 
