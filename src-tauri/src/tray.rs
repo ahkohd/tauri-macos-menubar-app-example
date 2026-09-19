@@ -21,7 +21,7 @@ pub fn create(app_handle: &AppHandle) -> tauri::Result<TrayIcon> {
                     let panel = app_handle.get_webview_panel("main").unwrap();
 
                     if panel.is_visible() {
-                        panel.order_out(None);
+                        panel.hide();
                         return;
                     }
 
